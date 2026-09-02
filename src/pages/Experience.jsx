@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getTheme, sanitizeName } from '../lib/theme.js'
+import { getTheme, getMode, sanitizeName } from '../lib/theme.js'
 import PixelConsole from '../components/PixelConsole.jsx'
 import { PixelHeart, PixelCharacter, PixelEnvelope } from '../components/PixelSprites.jsx'
 import Credit from '../components/Credit.jsx'
@@ -11,8 +11,11 @@ import {
   playHeartChirp,
   playLetterOpenChime,
   playPuffSound,
+  playJump,
+  toggleBgm,
+  stopBgm,
 } from '../lib/sound.js'
-import { Volume2, VolumeX } from 'lucide-react'
+import { Volume2, VolumeX, Music } from 'lucide-react'
 
 function useDecodedParams() {
   const { name } = useParams()
@@ -22,14 +25,20 @@ function useDecodedParams() {
   const from = (search.get('from') || '').trim().slice(0, 32).replace(/[<>]/g, '')
   const customNote = (search.get('note') || '').trim().slice(0, 120).replace(/[<>]/g, '')
   const themeKey = search.get('theme') || 'blush'
+  const modeKey = search.get('mode') || 'romantic'
+  const stickerKey = search.get('sticker') || 'fragile'
+
   const theme = getTheme(themeKey)
-  return { display, from, customNote, theme }
+  const mode = getMode(modeKey)
+
+  return { display, from, customNote, theme, mode, stickerKey }
 }
 
 export default function Experience() {
-  const { display, from, customNote, theme } = useDecodedParams()
+  const { display, from, customNote, theme, mode, stickerKey } = useDecodedParams()
   const [scene, setScene] = useState(0)
   const [soundEnabled, setSoundEnabled] = useState(true)
+  const [bgmEnabled, setBgmEnabled] = useState(false)
 
   function nextScene() {
     setScene((s) => Math.min(s + 1, 4))
@@ -38,6 +47,18 @@ export default function Experience() {
   function prevScene() {
     setScene((s) => Math.max(s - 1, 0))
   }
+
+  function toggleMusic() {
+    const next = !bgmEnabled
+    setBgmEnabled(next)
+    toggleBgm(next)
+  }
+
+  useEffect(() => {
+    return () => {
+      stopBgm()
+    }
+  }, [])
 
   return (
     <div
@@ -53,7 +74,7 @@ export default function Experience() {
         userSelect: 'none',
       }}
     >
-      {/* Sound Toggle Bar */}
+      {/* Audio Controls Bar */}
       <div
         style={{
           width: '100%',
@@ -81,33 +102,57 @@ export default function Experience() {
           <span>FOR {display.toUpperCase()}</span>
         </Link>
 
-        <button
-          type="button"
-          onClick={() => setSoundEnabled(!soundEnabled)}
-          aria-label="Toggle 8-bit sound"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            color: theme.muted,
-          }}
-          className="font-pixel"
-        >
-          {soundEnabled ? (
-            <Volume2 size={16} color={theme.accent} />
-          ) : (
-            <VolumeX size={16} color={theme.muted} />
-          )}
-          <span style={{ fontSize: '8px' }}>{soundEnabled ? 'SFX: ON' : 'SFX: OFF'}</span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* Lofi BGM Toggle */}
+          <button
+            type="button"
+            onClick={toggleMusic}
+            aria-label="Toggle Lofi Music"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              color: bgmEnabled ? theme.accent : theme.muted,
+            }}
+            className="font-pixel"
+          >
+            <Music size={14} color={bgmEnabled ? theme.accent : theme.muted} />
+            <span style={{ fontSize: '8px' }}>{bgmEnabled ? 'BGM: ON' : 'BGM: OFF'}</span>
+          </button>
+
+          {/* SFX Toggle */}
+          <button
+            type="button"
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            aria-label="Toggle 8-bit sound"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              color: theme.muted,
+            }}
+            className="font-pixel"
+          >
+            {soundEnabled ? (
+              <Volume2 size={15} color={theme.accent} />
+            ) : (
+              <VolumeX size={15} color={theme.muted} />
+            )}
+            <span style={{ fontSize: '8px' }}>{soundEnabled ? 'SFX: ON' : 'SFX: OFF'}</span>
+          </button>
+        </div>
       </div>
 
       {/* The Physical Retro Handheld Console */}
       <PixelConsole
         theme={theme}
+        stickerKey={stickerKey}
         soundEnabled={soundEnabled}
         onPressA={() => {
           if (scene === 2) {
@@ -134,6 +179,7 @@ export default function Experience() {
               key="s1"
               display={display}
               theme={theme}
+              mode={mode}
               soundEnabled={soundEnabled}
               onNext={nextScene}
             />
@@ -157,6 +203,7 @@ export default function Experience() {
               display={display}
               customNote={customNote}
               theme={theme}
+              mode={mode}
               soundEnabled={soundEnabled}
               onNext={nextScene}
             />
@@ -184,15 +231,22 @@ export default function Experience() {
 
 /* =========================================================
    SCREEN 0: CARTRIDGE BOOT
-   (With Human Imperfection: Blow on cartridge prompt)
+   (Interactive jumping character + blow on cartridge)
 ========================================================= */
 function ScreenBoot({ display, from, theme, soundEnabled, onPressStart }) {
   const [blowing, setBlowing] = useState(false)
+  const [jumping, setJumping] = useState(false)
 
   function handleBlow() {
     playPuffSound(soundEnabled)
     setBlowing(true)
     setTimeout(() => setBlowing(false), 800)
+  }
+
+  function handleCharacterTap() {
+    playJump(soundEnabled)
+    setJumping(true)
+    setTimeout(() => setJumping(false), 400)
   }
 
   return (
@@ -249,9 +303,18 @@ function ScreenBoot({ display, from, theme, soundEnabled, onPressStart }) {
         ★ RETRO LOVE NOTE ★
       </div>
 
-      <div style={{ margin: '10px 0' }} className="animate-pixel-float">
-        <PixelCharacter size={68} isBlushing={blowing} />
-      </div>
+      {/* Interactive Jumping Character */}
+      <motion.div
+        onClick={handleCharacterTap}
+        animate={jumping ? { y: [-14, 0], rotate: [0, -8, 8, 0] } : {}}
+        transition={{ duration: 0.35 }}
+        whileHover={{ scale: 1.1 }}
+        style={{ margin: '10px 0', cursor: 'pointer' }}
+        title="Tap me to jump!"
+        className="animate-pixel-float"
+      >
+        <PixelCharacter size={68} isBlushing={blowing || jumping} />
+      </motion.div>
 
       <div>
         <div
@@ -321,19 +384,18 @@ function ScreenBoot({ display, from, theme, soundEnabled, onPressStart }) {
 
 /* =========================================================
    SCREEN 1: SINCERE HONEST TALK
-   (With Human Imperfection: Hesitation, Backspace & Real Truth)
+   (Using mode-specific text & backspace effect)
 ========================================================= */
-function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
-  const tentativeText = `I was just wondering if maybe we could hang out some—`
-  const honestTruth = `Actually...\nI don't just want to 'hang out'.\nI can write hundreds of lines of code, but saying how I feel in person? I freeze up.\nSo I spent hours building this little 8-bit note for you instead.`
+function ScreenHonestTalk({ display, theme, mode, soundEnabled, onNext }) {
+  const tentativeText = mode.tentativeText
+  const honestTruth = mode.honestTruth(display)
 
   const [text, setText] = useState('')
-  const [phase, setPhase] = useState('typing_tentative') // typing_tentative -> pausing -> backspacing -> typing_truth -> done
+  const [phase, setPhase] = useState('typing_tentative')
 
   useEffect(() => {
     let timer
 
-    // Phase 1: Type tentative thought
     if (phase === 'typing_tentative') {
       let idx = 0
       timer = setInterval(() => {
@@ -343,14 +405,10 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
           if (idx % 2 === 0) playTypeBlip(soundEnabled)
         } else {
           clearInterval(timer)
-          // Pause before hesitating & backspacing
           setTimeout(() => setPhase('backspacing'), 700)
         }
       }, 45)
-    }
-
-    // Phase 2: Backspace tentatively
-    else if (phase === 'backspacing') {
+    } else if (phase === 'backspacing') {
       let current = tentativeText
       timer = setInterval(() => {
         if (current.length > 0) {
@@ -359,14 +417,10 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
           playBackspaceSound(soundEnabled)
         } else {
           clearInterval(timer)
-          // Pause a beat after clearing, then type the honest truth
           setTimeout(() => setPhase('typing_truth'), 350)
         }
       }, 25)
-    }
-
-    // Phase 3: Type the honest truth
-    else if (phase === 'typing_truth') {
+    } else if (phase === 'typing_truth') {
       let idx = 0
       timer = setInterval(() => {
         idx++
@@ -395,7 +449,6 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
         justifyContent: 'space-between',
       }}
     >
-      {/* Screen Header */}
       <div
         className="font-pixel"
         style={{
@@ -411,7 +464,6 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
         <span>1/3</span>
       </div>
 
-      {/* Sincere RPG Dialogue Box with Backspace Effect */}
       <div
         className="font-silkscreen"
         style={{
@@ -435,7 +487,6 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
         )}
       </div>
 
-      {/* Next Prompt */}
       <div style={{ textAlign: 'center', marginTop: 8 }}>
         <button
           type="button"
@@ -457,7 +508,7 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
 }
 
 /* =========================================================
-   SCREEN 2: THE 3 LITTLE THINGS (SWEET REASONS)
+   SCREEN 2: THE 3 LITTLE THINGS
 ========================================================= */
 function ScreenLittleThings({ theme, soundEnabled, onNext }) {
   const items = [
@@ -517,7 +568,6 @@ function ScreenLittleThings({ theme, soundEnabled, onNext }) {
         <span>2/3</span>
       </div>
 
-      {/* 3 Selector Tabs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, margin: '8px 0' }}>
         {items.map((it, idx) => {
           const isSel = idx === activeIdx
@@ -546,7 +596,6 @@ function ScreenLittleThings({ theme, soundEnabled, onNext }) {
         })}
       </div>
 
-      {/* Detail Card */}
       <div
         className="font-silkscreen"
         style={{
@@ -570,7 +619,6 @@ function ScreenLittleThings({ theme, soundEnabled, onNext }) {
         <div>"{activeItem.text}"</div>
       </div>
 
-      {/* Continue Prompt */}
       <div style={{ textAlign: 'center', marginTop: 8 }}>
         <button
           type="button"
@@ -593,9 +641,9 @@ function ScreenLittleThings({ theme, soundEnabled, onNext }) {
 
 /* =========================================================
    SCREEN 3: THE SECRET LETTER REVEAL
-   (With Human Imperfection: Crossed-out handwritten word)
+   (Using mode.badge banner)
 ========================================================= */
-function ScreenLetterReveal({ display, customNote, theme, onNext }) {
+function ScreenLetterReveal({ display, customNote, theme, mode, onNext }) {
   const [opened, setOpened] = useState(false)
 
   return (
@@ -628,7 +676,6 @@ function ScreenLetterReveal({ display, customNote, theme, onNext }) {
         <span>3/3</span>
       </div>
 
-      {/* Centerpiece: Pixel Letter Envelope */}
       <div style={{ margin: '14px 0' }}>
         {!opened ? (
           <div
@@ -669,16 +716,15 @@ function ScreenLetterReveal({ display, customNote, theme, onNext }) {
             <div
               className="font-pixel"
               style={{
-                fontSize: '17px',
+                fontSize: '15px',
                 color: theme.accent,
                 lineHeight: 1.3,
                 marginBottom: 8,
               }}
             >
-              I LIKE YOU.
+              {mode.badge}
             </div>
 
-            {/* Human Imperfection: Crossed-out handwritten word */}
             <div
               className="font-silkscreen"
               style={{
@@ -731,7 +777,6 @@ function ScreenLetterReveal({ display, customNote, theme, onNext }) {
         )}
       </div>
 
-      {/* Button Action */}
       <div style={{ width: '100%' }}>
         {!opened ? (
           <button
@@ -841,7 +886,6 @@ function ScreenKeepsake({ display, from, theme, onRestart }) {
         </div>
       </div>
 
-      {/* Buttons inside screen */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 220 }}>
         <Link
           to="/"

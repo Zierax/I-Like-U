@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { playConsoleButton, playHeartChirp } from '../lib/sound.js'
+import { playConsoleButton, playHeartChirp, playSparkle } from '../lib/sound.js'
+import { getSticker } from '../lib/theme.js'
 
 export default function PixelConsole({
   children,
   theme,
+  stickerKey = 'fragile',
   soundEnabled = true,
   onPressA,
   onPressB,
@@ -12,6 +14,9 @@ export default function PixelConsole({
 }) {
   const [bToast, setBToast] = useState('')
   const [stickerWiggle, setStickerWiggle] = useState(false)
+  const [floatingParticles, setFloatingParticles] = useState([])
+
+  const sticker = getSticker(stickerKey)
 
   function handleButton(action, callback) {
     playConsoleButton(soundEnabled)
@@ -28,6 +33,20 @@ export default function PixelConsole({
     playHeartChirp(soundEnabled)
     setStickerWiggle(true)
     setTimeout(() => setStickerWiggle(false), 600)
+  }
+
+  function handleScreenClick(e) {
+    // Only spawn particle if clicked directly on screen background
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const id = Date.now() + Math.random()
+
+    playSparkle(soundEnabled)
+    setFloatingParticles((prev) => [...prev.slice(-8), { id, x, y }])
+    setTimeout(() => {
+      setFloatingParticles((prev) => prev.filter((p) => p.id !== id))
+    }, 1000)
   }
 
   // Keyboard controls listener
@@ -104,7 +123,7 @@ export default function PixelConsole({
           position: 'relative',
         }}
       >
-        {/* Human Imperfection Touch: The Crooked Masking Tape Sticker */}
+        {/* Customizable Crooked Masking Tape Sticker */}
         <motion.div
           onClick={handleStickerTap}
           animate={stickerWiggle ? { rotate: [3.5, -4, 5, -2, 3.5] } : { rotate: 3.5 }}
@@ -115,8 +134,8 @@ export default function PixelConsole({
             position: 'absolute',
             top: -14,
             right: 18,
-            background: '#FFF9D2',
-            color: '#5C4314',
+            background: sticker.bg || '#FFF9D2',
+            color: sticker.color || '#5C4314',
             border: `1.5px dashed ${theme.border}`,
             padding: '4px 10px',
             fontSize: '9px',
@@ -128,9 +147,9 @@ export default function PixelConsole({
             alignItems: 'center',
             gap: 4,
           }}
-          title="Click me!"
+          title="Tap to wiggle sticker!"
         >
-          <span>⚠ FRAGILE HEART · HANDLE WITH CARE</span>
+          <span>{sticker.label}</span>
         </motion.div>
 
         {/* Top Edge Notch Detail */}
@@ -199,6 +218,7 @@ export default function PixelConsole({
 
           {/* Actual LCD Pixel Screen */}
           <div
+            onClick={handleScreenClick}
             style={{
               background: theme.bg,
               border: '2px solid rgba(0,0,0,0.4)',
@@ -209,8 +229,29 @@ export default function PixelConsole({
               position: 'relative',
               overflow: 'hidden',
               boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.2)',
+              cursor: 'crosshair',
             }}
           >
+            {/* Interactive Screen Particle Spawner */}
+            {floatingParticles.map((p) => (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 1, scale: 0.6, y: 0 }}
+                animate={{ opacity: 0, scale: 1.4, y: -30 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                style={{
+                  position: 'absolute',
+                  left: p.x,
+                  top: p.y,
+                  pointerEvents: 'none',
+                  zIndex: 25,
+                  fontSize: 16,
+                }}
+              >
+                ♥
+              </motion.div>
+            ))}
+
             {/* Subtle Screen Scanline Texture */}
             <div
               style={{
@@ -504,7 +545,7 @@ export default function PixelConsole({
           opacity: 0.8,
         }}
       >
-        TIP: Press (A) or ENTER to continue · (B) to go back
+        TIP: Tap screen for sparkles · (A) to continue · (B) to go back
       </div>
     </div>
   )
