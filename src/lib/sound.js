@@ -1,5 +1,7 @@
-// Warm, Gentle 8-Bit Chiptune Synthesizer
+// Rich, Warm 8-Bit Chiptune & Procedural Lofi Ambient Engine
 let audioCtx = null
+let bgmInterval = null
+let isBgmPlaying = false
 
 function getAudioContext() {
   if (typeof window === 'undefined') return null
@@ -15,7 +17,83 @@ function getAudioContext() {
   return audioCtx
 }
 
-// Gentle text typing blip (warm filtered square wave)
+// Procedural 8-bit Lofi Lullaby Music Loop
+// Plays a warm, soothing chord arpeggio progression (Cmaj7 -> Am9 -> Fmaj7 -> Gsus4)
+const BGM_ARPEGGIOS = [
+  // Cmaj7
+  [261.63, 329.63, 392.00, 493.88, 523.25, 493.88, 392.00, 329.63],
+  // Am9
+  [220.00, 261.63, 329.63, 392.00, 493.88, 392.00, 329.63, 261.63],
+  // Fmaj7
+  [174.61, 220.00, 261.63, 329.63, 392.00, 329.63, 261.63, 220.00],
+  // Gsus4 / G
+  [196.00, 246.94, 293.66, 392.00, 440.00, 392.00, 293.66, 246.94],
+]
+
+let bgmMeasure = 0
+let bgmStep = 0
+
+export function startBgm() {
+  const ctx = getAudioContext()
+  if (!ctx || bgmInterval) return
+  isBgmPlaying = true
+
+  bgmInterval = setInterval(() => {
+    if (!isBgmPlaying) return
+    try {
+      const now = ctx.currentTime
+      const chord = BGM_ARPEGGIOS[bgmMeasure]
+      const freq = chord[bgmStep]
+
+      // Soft music box oscillator
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      const filter = ctx.createBiquadFilter()
+
+      osc.type = 'triangle'
+      osc.frequency.setValueAtTime(freq, now)
+
+      filter.type = 'lowpass'
+      filter.frequency.setValueAtTime(1200, now)
+
+      // Very soft, relaxing volume
+      gain.gain.setValueAtTime(0.018, now)
+      gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.32)
+
+      osc.connect(filter)
+      filter.connect(gain)
+      gain.connect(ctx.destination)
+
+      osc.start(now)
+      osc.stop(now + 0.32)
+
+      // Step sequencer
+      bgmStep++
+      if (bgmStep >= chord.length) {
+        bgmStep = 0
+        bgmMeasure = (bgmMeasure + 1) % BGM_ARPEGGIOS.length
+      }
+    } catch {}
+  }, 220)
+}
+
+export function stopBgm() {
+  isBgmPlaying = false
+  if (bgmInterval) {
+    clearInterval(bgmInterval)
+    bgmInterval = null
+  }
+}
+
+export function toggleBgm(enabled) {
+  if (enabled) {
+    startBgm()
+  } else {
+    stopBgm()
+  }
+}
+
+// Gentle text typing blip
 export function playTypeBlip(enabled = true) {
   if (!enabled) return
   try {
@@ -69,7 +147,7 @@ export function playBackspaceSound(enabled = true) {
   } catch {}
 }
 
-// Tactile button click sound
+// Tactile Game Boy button click
 export function playConsoleButton(enabled = true) {
   if (!enabled) return
   try {
@@ -80,39 +158,40 @@ export function playConsoleButton(enabled = true) {
     const gain = ctx.createGain()
 
     osc.type = 'triangle'
-    osc.frequency.setValueAtTime(440, now)
-    osc.frequency.exponentialRampToValueAtTime(220, now + 0.06)
+    osc.frequency.setValueAtTime(480, now)
+    osc.frequency.exponentialRampToValueAtTime(240, now + 0.05)
 
-    gain.gain.setValueAtTime(0.05, now)
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06)
+    gain.gain.setValueAtTime(0.045, now)
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05)
 
     osc.connect(gain)
     gain.connect(ctx.destination)
 
     osc.start(now)
-    osc.stop(now + 0.06)
+    osc.stop(now + 0.05)
   } catch {}
 }
 
-// Warm heart chirp (ascending 2-note arpeggio)
+// Warm heart chirp / level up sound
 export function playHeartChirp(enabled = true) {
   if (!enabled) return
   try {
     const ctx = getAudioContext()
     if (!ctx) return
     const now = ctx.currentTime
+
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     const filter = ctx.createBiquadFilter()
 
-    osc.type = 'square'
-    osc.frequency.setValueAtTime(523.25, now) // C5
-    osc.frequency.setValueAtTime(659.25, now + 0.07) // E5
+    osc.type = 'triangle'
+    osc.frequency.setValueAtTime(440, now)
+    osc.frequency.exponentialRampToValueAtTime(880, now + 0.12)
 
     filter.type = 'lowpass'
-    filter.frequency.setValueAtTime(1600, now)
+    filter.frequency.setValueAtTime(1800, now)
 
-    gain.gain.setValueAtTime(0.035, now)
+    gain.gain.setValueAtTime(0.04, now)
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16)
 
     osc.connect(filter)
@@ -121,6 +200,58 @@ export function playHeartChirp(enabled = true) {
 
     osc.start(now)
     osc.stop(now + 0.16)
+  } catch {}
+}
+
+// Character jump chirp
+export function playJump(enabled = true) {
+  if (!enabled) return
+  try {
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const now = ctx.currentTime
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+
+    osc.type = 'square'
+    osc.frequency.setValueAtTime(300, now)
+    osc.frequency.exponentialRampToValueAtTime(650, now + 0.1)
+
+    gain.gain.setValueAtTime(0.03, now)
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1)
+
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+
+    osc.start(now)
+    osc.stop(now + 0.1)
+  } catch {}
+}
+
+// Sparkle sound effect (crystalline 3-note sparkle)
+export function playSparkle(enabled = true) {
+  if (!enabled) return
+  try {
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const now = ctx.currentTime
+
+    const notes = [1046.50, 1318.51, 1567.98] // C6, E6, G6
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(freq, now + i * 0.04)
+
+      gain.gain.setValueAtTime(0.03, now + i * 0.04)
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.1)
+
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+
+      osc.start(now + i * 0.04)
+      osc.stop(now + i * 0.04 + 0.1)
+    })
   } catch {}
 }
 
@@ -136,7 +267,7 @@ export function playLetterOpenChime(enabled = true) {
       { f: 523.25, t: 0.00, d: 0.09 }, // C5
       { f: 659.25, t: 0.08, d: 0.09 }, // E5
       { f: 783.99, t: 0.16, d: 0.10 }, // G5
-      { f: 1046.50, t: 0.25, d: 0.35 }, // C6
+      { f: 1046.50, t: 0.25, d: 0.40 }, // C6
     ]
 
     notes.forEach(({ f, t, d }) => {
@@ -148,7 +279,7 @@ export function playLetterOpenChime(enabled = true) {
       osc.frequency.setValueAtTime(f, now + t)
 
       filter.type = 'lowpass'
-      filter.frequency.setValueAtTime(2000, now + t)
+      filter.frequency.setValueAtTime(2200, now + t)
 
       gain.gain.setValueAtTime(0.05, now + t)
       gain.gain.exponentialRampToValueAtTime(0.001, now + t + d)
@@ -171,7 +302,6 @@ export function playPuffSound(enabled = true) {
     if (!ctx) return
     const now = ctx.currentTime
 
-    // White noise buffer for blowing sound
     const bufferSize = ctx.sampleRate * 0.2
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
     const data = buffer.getChannelData(0)
