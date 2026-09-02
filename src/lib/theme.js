@@ -76,45 +76,9 @@ export const themes = {
   },
 }
 
-// Experience Modes
-export const modes = {
-  romantic: {
-    id: 'romantic',
-    name: 'Romantic Confession',
-    tagline: 'Because saying it in person makes me freeze up.',
-    badge: 'I REALLY LIKE YOU.',
-    tentativeText: 'I was just wondering if maybe we could hang out some—',
-    honestTruth: (display) =>
-      `Actually...\nI don't just want to 'hang out'.\nI can write hundreds of lines of code, but saying how I feel to you? I completely freeze up.\nSo I spent hours building this little 8-bit note for you instead.`,
-  },
-  crush: {
-    id: 'crush',
-    name: 'Secret Crush',
-    tagline: 'The secret I have been hiding for a while.',
-    badge: 'I HAVE A CRUSH ON YOU.',
-    tentativeText: 'Hey... I have been trying to find the right time to say this—',
-    honestTruth: (display) =>
-      `Actually...\nThere is never a 'perfect' time.\nEvery time you smile or say my name, my entire day gets 100x better.\nI have had a crush on you for a while now, ${display}.`,
-  },
-  playful: {
-    id: 'playful',
-    name: 'Playful & Teasing',
-    tagline: 'You are officially my favorite human.',
-    badge: 'YOU ARE MY FAVORITE.',
-    tentativeText: 'I was thinking of sending you a meme, but—',
-    honestTruth: (display) =>
-      `Actually...\nA simple meme isn't enough for you, ${display}.\nYou are easily the funniest, coolest, and sweetest person around.\nJust wanted to make you smile today!`,
-  },
-  appreciation: {
-    id: 'appreciation',
-    name: 'Pure Appreciation',
-    tagline: 'A little reminder of how wonderful you are.',
-    badge: 'YOU ARE INCREDIBLE.',
-    tentativeText: "I usually don't say cheesy stuff, but—",
-    honestTruth: (display) =>
-      `Actually...\nYou deserve to hear this, ${display}.\nYour kindness and energy make the world a much brighter place.\nThank you for simply being you.`,
-  },
-}
+import { modes, getModeData } from './messages.js'
+
+export { modes, getModeData }
 
 // Console Stickers
 export const stickers = {
@@ -163,13 +127,14 @@ export function sanitizeName(raw) {
   return t.replace(/[<>]/g, '')
 }
 
-export function buildLink({ name, from, theme, mode, sticker, note }) {
+export function buildLink({ name, from, theme, mode, sticker, avatar, note }) {
   const n = encodeURIComponent(sanitizeName(name) || 'Maya')
   const params = new URLSearchParams()
   if (from && from.trim()) params.set('from', from.trim().slice(0, 32))
   if (theme && theme !== 'blush') params.set('theme', theme)
   if (mode && mode !== 'romantic') params.set('mode', mode)
   if (sticker && sticker !== 'fragile') params.set('sticker', sticker)
+  if (avatar && avatar !== 'cat') params.set('avatar', avatar)
   if (note && note.trim()) params.set('note', note.trim().slice(0, 120))
   const qs = params.toString()
   return `/for/${n}${qs ? `?${qs}` : ''}`

@@ -27,15 +27,16 @@ function useDecodedParams() {
   const themeKey = search.get('theme') || 'blush'
   const modeKey = search.get('mode') || 'romantic'
   const stickerKey = search.get('sticker') || 'fragile'
+  const avatarKey = search.get('avatar') || 'cat'
 
   const theme = getTheme(themeKey)
   const mode = getMode(modeKey)
 
-  return { display, from, customNote, theme, mode, stickerKey }
+  return { display, from, customNote, theme, mode, stickerKey, avatarKey }
 }
 
 export default function Experience() {
-  const { display, from, customNote, theme, mode, stickerKey } = useDecodedParams()
+  const { display, from, customNote, theme, mode, stickerKey, avatarKey } = useDecodedParams()
   const [scene, setScene] = useState(0)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [bgmEnabled, setBgmEnabled] = useState(false)
@@ -169,6 +170,7 @@ export default function Experience() {
               display={display}
               from={from}
               theme={theme}
+              avatar={avatarKey}
               soundEnabled={soundEnabled}
               onPressStart={nextScene}
             />
@@ -189,6 +191,7 @@ export default function Experience() {
             <ScreenLittleThings
               key="s2"
               theme={theme}
+              mode={mode}
               soundEnabled={soundEnabled}
               onNext={() => {
                 playLetterOpenChime(soundEnabled)
@@ -215,6 +218,8 @@ export default function Experience() {
               display={display}
               from={from}
               theme={theme}
+              mode={mode}
+              avatar={avatarKey}
               onRestart={() => setScene(0)}
             />
           )}
@@ -233,7 +238,7 @@ export default function Experience() {
    SCREEN 0: CARTRIDGE BOOT
    (Interactive jumping character + blow on cartridge)
 ========================================================= */
-function ScreenBoot({ display, from, theme, soundEnabled, onPressStart }) {
+function ScreenBoot({ display, from, theme, avatar = 'cat', soundEnabled, onPressStart }) {
   const [blowing, setBlowing] = useState(false)
   const [jumping, setJumping] = useState(false)
 
@@ -303,7 +308,7 @@ function ScreenBoot({ display, from, theme, soundEnabled, onPressStart }) {
         ★ RETRO LOVE NOTE ★
       </div>
 
-      {/* Interactive Jumping Character */}
+      {/* Interactive Jumping Character / Cat */}
       <motion.div
         onClick={handleCharacterTap}
         animate={jumping ? { y: [-14, 0], rotate: [0, -8, 8, 0] } : {}}
@@ -313,7 +318,7 @@ function ScreenBoot({ display, from, theme, soundEnabled, onPressStart }) {
         title="Tap me to jump!"
         className="animate-pixel-float"
       >
-        <PixelCharacter size={68} isBlushing={blowing || jumping} />
+        <PixelCharacter avatar={avatar} size={76} isBlushing={blowing || jumping} />
       </motion.div>
 
       <div>
@@ -510,8 +515,8 @@ function ScreenHonestTalk({ display, theme, mode, soundEnabled, onNext }) {
 /* =========================================================
    SCREEN 2: THE 3 LITTLE THINGS
 ========================================================= */
-function ScreenLittleThings({ theme, soundEnabled, onNext }) {
-  const items = [
+function ScreenLittleThings({ theme, mode, soundEnabled, onNext }) {
+  const items = mode?.reasons || [
     {
       id: 0,
       title: 'YOUR SMILE',
@@ -742,9 +747,11 @@ function ScreenLetterReveal({ display, customNote, theme, mode, onNext }) {
                   opacity: 0.5,
                 }}
               >
-                nice
+                {mode?.crossedOut?.strikethrough || 'nice'}
               </span>{' '}
-              <span style={{ color: theme.accent, fontWeight: 700 }}>extraordinary</span>.
+              <span style={{ color: theme.accent, fontWeight: 700 }}>
+                {mode?.crossedOut?.replacement || 'extraordinary'}
+              </span>.
             </div>
 
             {customNote && (
@@ -771,7 +778,7 @@ function ScreenLetterReveal({ display, customNote, theme, mode, onNext }) {
                 lineHeight: 1.4,
               }}
             >
-              For {display}. No pressure, no expectations. Just wanted you to know how special you are.
+              {mode?.subtitle ? mode.subtitle(display) : `For ${display}. No pressure, no expectations. Just wanted you to know how special you are.`}
             </div>
           </motion.div>
         )}
@@ -817,7 +824,7 @@ function ScreenLetterReveal({ display, customNote, theme, mode, onNext }) {
 /* =========================================================
    SCREEN 4: QUEST COMPLETE / FINAL KEEPSAKE
 ========================================================= */
-function ScreenKeepsake({ display, from, theme, onRestart }) {
+function ScreenKeepsake({ display, from, theme, avatar = 'cat', onRestart }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -843,8 +850,8 @@ function ScreenKeepsake({ display, from, theme, onRestart }) {
         ★ QUEST COMPLETE ★
       </div>
 
-      <div style={{ margin: '10px 0' }} className="animate-pixel-heart">
-        <PixelHeart size={48} color={theme.accent} border={theme.border} />
+      <div style={{ margin: '8px 0' }} className="animate-pixel-float">
+        <PixelCharacter avatar={avatar} size={70} isBlushing={true} />
       </div>
 
       <div>
@@ -882,7 +889,7 @@ function ScreenKeepsake({ display, from, theme, onRestart }) {
             margin: '0 auto',
           }}
         >
-          Building this was the easiest choice in the world. Hope it brought a smile to your face!
+          {mode?.victoryText || 'Building this was the easiest choice in the world. Hope it brought a smile to your face!'}
         </div>
       </div>
 
