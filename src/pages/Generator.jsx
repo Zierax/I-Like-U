@@ -18,6 +18,7 @@ export default function Generator() {
   const [selectedSticker, setSelectedSticker] = useState('fragile')
   const [selectedAvatar, setSelectedAvatar] = useState('kitty')
   const [selectedIntro, setSelectedIntro] = useState('dev')
+  const [customIntroText, setCustomIntroText] = useState('')
   const [copied, setCopied] = useState(false)
   const [showQR, setShowQR] = useState(false)
   const [showDirectory, setShowDirectory] = useState(false)
@@ -33,9 +34,10 @@ export default function Generator() {
       sticker: selectedSticker,
       avatar: selectedAvatar,
       intro: selectedIntro,
+      introText: customIntroText,
       note: customNote,
     })
-  }, [theirName, yourName, selectedTheme, selectedMode, selectedSticker, selectedAvatar, selectedIntro, customNote])
+  }, [theirName, yourName, selectedTheme, selectedMode, selectedSticker, selectedAvatar, selectedIntro, customIntroText, customNote])
 
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
   const fullUrl = origin ? `${origin}${previewPath}` : previewPath
@@ -422,6 +424,30 @@ export default function Generator() {
                     )
                   })}
                 </div>
+
+                {/* Optional Custom Confession Override */}
+                <label style={{ display: 'grid', gap: 6, marginTop: 4 }}>
+                  <span className="font-silkscreen" style={{ fontSize: '10px', color: t.muted }}>
+                    OR WRITE YOUR OWN CONFESSION LINE (OPTIONAL):
+                  </span>
+                  <input
+                    value={customIntroText}
+                    onChange={(e) => setCustomIntroText(e.target.value)}
+                    placeholder="Leave empty to use default, or write your own words..."
+                    maxLength={180}
+                    className="font-silkscreen"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: `2px solid ${t.border}`,
+                      background: '#FFFFFF',
+                      color: t.ink,
+                      fontSize: '12px',
+                      outline: 'none',
+                      borderRadius: 2,
+                    }}
+                  />
+                </label>
               </div>
 
               {/* Field 8: Secret Note with Randomizer & Catalog */}

@@ -24,6 +24,7 @@ function useDecodedParams() {
   const display = sanitizeName(raw)
   const from = (search.get('from') || '').trim().slice(0, 32).replace(/[<>]/g, '')
   const customNote = (search.get('note') || '').trim().slice(0, 120).replace(/[<>]/g, '')
+  const customIntro = (search.get('intro_text') || '').trim().slice(0, 240).replace(/[<>]/g, '')
   const themeKey = search.get('theme') || 'blush'
   const modeKey = search.get('mode') || 'romantic'
   const stickerKey = search.get('sticker') || 'fragile'
@@ -34,11 +35,11 @@ function useDecodedParams() {
   const mode = getMode(modeKey)
   const intro = getDialogueIntro(introKey)
 
-  return { display, from, customNote, theme, mode, stickerKey, avatarKey, intro }
+  return { display, from, customNote, customIntro, theme, mode, stickerKey, avatarKey, intro }
 }
 
 export default function Experience() {
-  const { display, from, customNote, theme, mode, stickerKey, avatarKey, intro } = useDecodedParams()
+  const { display, from, customNote, customIntro, theme, mode, stickerKey, avatarKey, intro } = useDecodedParams()
   const [scene, setScene] = useState(0)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [bgmEnabled, setBgmEnabled] = useState(false)
@@ -186,6 +187,7 @@ export default function Experience() {
               theme={theme}
               mode={mode}
               intro={intro}
+              customIntro={customIntro}
               soundEnabled={soundEnabled}
               onNext={nextScene}
             />
@@ -395,11 +397,11 @@ function ScreenBoot({ display, from, theme, avatar = 'cat', soundEnabled, onPres
    SCREEN 1: SINCERE HONEST TALK
    (Using custom dialogue story & backspace hesitation effect)
 ========================================================= */
-function ScreenHonestTalk({ display, from, theme, mode, intro, soundEnabled, onNext }) {
+function ScreenHonestTalk({ display, from, theme, mode, intro, customIntro, soundEnabled, onNext }) {
   const tentativeText = intro?.tentativeText || mode.tentativeText
-  const honestTruth = intro?.honestTruth
+  const honestTruth = customIntro || (intro?.honestTruth
     ? intro.honestTruth(display, from)
-    : mode.honestTruth(display, from)
+    : mode.honestTruth(display, from))
 
   const [text, setText] = useState('')
   const [phase, setPhase] = useState('typing_tentative')
@@ -830,7 +832,7 @@ function ScreenLetterReveal({ display, customNote, theme, mode, onNext }) {
 /* =========================================================
    SCREEN 4: QUEST COMPLETE / FINAL KEEPSAKE
 ========================================================= */
-function ScreenKeepsake({ display, from, theme, avatar = 'cat', onRestart }) {
+function ScreenKeepsake({ display, from, theme, mode, avatar = 'kitty', onRestart }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}

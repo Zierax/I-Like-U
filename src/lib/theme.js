@@ -127,7 +127,7 @@ export function sanitizeName(raw) {
   return t.replace(/[<>]/g, '')
 }
 
-export function buildLink({ name, from, theme, mode, sticker, avatar, intro, note }) {
+export function buildLink({ name, from, theme, mode, sticker, avatar, intro, introText, note }) {
   const n = encodeURIComponent(sanitizeName(name) || 'Maya')
   const params = new URLSearchParams()
   if (from && from.trim()) params.set('from', from.trim().slice(0, 32))
@@ -136,6 +136,7 @@ export function buildLink({ name, from, theme, mode, sticker, avatar, intro, not
   if (sticker && sticker !== 'fragile') params.set('sticker', sticker)
   if (avatar && avatar !== 'kitty') params.set('avatar', avatar)
   if (intro && intro !== 'dev') params.set('intro', intro)
+  if (introText && introText.trim()) params.set('intro_text', introText.trim().slice(0, 240))
   if (note && note.trim()) params.set('note', note.trim().slice(0, 120))
   const qs = params.toString()
   return `/for/${n}${qs ? `?${qs}` : ''}`
