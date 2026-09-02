@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { Copy, Share2, QrCode, ExternalLink, Check } from 'lucide-react'
-import { themes, modes, stickers, buildLink, sanitizeName, getTheme } from '../lib/theme.js'
+import { themes, modes, stickers, dialogueIntros, buildLink, sanitizeName, getTheme } from '../lib/theme.js'
 import { NOTE_CATALOG, getRandomNote } from '../lib/messages.js'
 import Credit from '../components/Credit.jsx'
 import { PixelHeart } from '../components/PixelSprites.jsx'
@@ -16,7 +16,8 @@ export default function Generator() {
   const [selectedTheme, setSelectedTheme] = useState('blush')
   const [selectedMode, setSelectedMode] = useState('romantic')
   const [selectedSticker, setSelectedSticker] = useState('fragile')
-  const [selectedAvatar, setSelectedAvatar] = useState('cat')
+  const [selectedAvatar, setSelectedAvatar] = useState('kitty')
+  const [selectedIntro, setSelectedIntro] = useState('dev')
   const [copied, setCopied] = useState(false)
   const [showQR, setShowQR] = useState(false)
   const [showDirectory, setShowDirectory] = useState(false)
@@ -31,9 +32,10 @@ export default function Generator() {
       mode: selectedMode,
       sticker: selectedSticker,
       avatar: selectedAvatar,
+      intro: selectedIntro,
       note: customNote,
     })
-  }, [theirName, yourName, selectedTheme, selectedMode, selectedSticker, selectedAvatar, customNote])
+  }, [theirName, yourName, selectedTheme, selectedMode, selectedSticker, selectedAvatar, selectedIntro, customNote])
 
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
   const fullUrl = origin ? `${origin}${previewPath}` : previewPath
@@ -329,77 +331,104 @@ export default function Generator() {
                 </div>
               </div>
 
-              {/* Field 6: Companion Avatar */}
+              {/* Field 6: 4 Companion Avatars */}
               <div style={{ display: 'grid', gap: 10 }}>
                 <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
                   6. COMPANION AVATAR IN LETTER
                 </span>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playConsoleButton(true)
-                      setSelectedAvatar('cat')
-                    }}
-                    style={{
-                      textAlign: 'left',
-                      padding: '12px 14px',
-                      border: `3px solid ${t.border}`,
-                      background: selectedAvatar === 'cat' ? t.accent : '#FFFFFF',
-                      color: selectedAvatar === 'cat' ? '#FFFFFF' : t.ink,
-                      boxShadow: selectedAvatar === 'cat' ? `2px 2px 0px ${t.border}` : `4px 4px 0px ${t.border}`,
-                      transform: selectedAvatar === 'cat' ? 'translate(2px, 2px)' : 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      borderRadius: 2,
-                    }}
-                    className="font-silkscreen"
-                  >
-                    <span style={{ fontSize: '18px' }}>🐱</span>
-                    <div>
-                      <div style={{ fontSize: '11px', fontWeight: 700 }}>Chubby Kitty</div>
-                      <div style={{ fontSize: '9px', opacity: 0.85 }}>Cute paws holding letter</div>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playConsoleButton(true)
-                      setSelectedAvatar('chibi')
-                    }}
-                    style={{
-                      textAlign: 'left',
-                      padding: '12px 14px',
-                      border: `3px solid ${t.border}`,
-                      background: selectedAvatar === 'chibi' ? t.accent : '#FFFFFF',
-                      color: selectedAvatar === 'chibi' ? '#FFFFFF' : t.ink,
-                      boxShadow: selectedAvatar === 'chibi' ? `2px 2px 0px ${t.border}` : `4px 4px 0px ${t.border}`,
-                      transform: selectedAvatar === 'chibi' ? 'translate(2px, 2px)' : 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      borderRadius: 2,
-                    }}
-                    className="font-silkscreen"
-                  >
-                    <span style={{ fontSize: '18px' }}>🧑‍🎨</span>
-                    <div>
-                      <div style={{ fontSize: '11px', fontWeight: 700 }}>Chibi Sweetheart</div>
-                      <div style={{ fontSize: '9px', opacity: 0.85 }}>Cozy hoodie & mittens</div>
-                    </div>
-                  </button>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8 }}>
+                  {[
+                    { id: 'kitty', icon: '🐱', name: 'Chubby Kitty', desc: 'Paws holding letter' },
+                    { id: 'puppy', icon: '🐶', name: 'Shiba Puppy', desc: 'Floppy ears & tail' },
+                    { id: 'bear', icon: '🧸', name: 'Cozy Bear', desc: 'Fluffy cuddly teddy' },
+                    { id: 'dev', icon: '🧑‍💻', name: 'Shy Dev', desc: 'Headphones & hoodie' },
+                  ].map((av) => {
+                    const isSel = selectedAvatar === av.id
+                    return (
+                      <button
+                        key={av.id}
+                        type="button"
+                        onClick={() => {
+                          playConsoleButton(true)
+                          setSelectedAvatar(av.id)
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          padding: '10px 12px',
+                          border: `3px solid ${t.border}`,
+                          background: isSel ? t.accent : '#FFFFFF',
+                          color: isSel ? '#FFFFFF' : t.ink,
+                          boxShadow: isSel ? `2px 2px 0px ${t.border}` : `4px 4px 0px ${t.border}`,
+                          transform: isSel ? 'translate(2px, 2px)' : 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          borderRadius: 2,
+                        }}
+                        className="font-silkscreen"
+                      >
+                        <span style={{ fontSize: '20px' }}>{av.icon}</span>
+                        <div>
+                          <div style={{ fontSize: '11px', fontWeight: 700 }}>{av.name}</div>
+                          <div style={{ fontSize: '9px', opacity: 0.85 }}>{av.desc}</div>
+                        </div>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
-              {/* Field 7: Secret Note with Randomizer & Catalog */}
+              {/* Field 7: Dialogue Story Style (First Scene) */}
+              <div style={{ display: 'grid', gap: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
+                    7. STORY INTRO STYLE (SCENE 1)
+                  </span>
+                  <span className="font-silkscreen" style={{ fontSize: '9px', color: t.muted }}>
+                    [ THE SHY DEVELOPER IS DEFAULT ]
+                  </span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8 }}>
+                  {Object.values(dialogueIntros).map((st) => {
+                    const isSel = selectedIntro === st.id
+                    return (
+                      <button
+                        key={st.id}
+                        type="button"
+                        onClick={() => {
+                          playConsoleButton(true)
+                          setSelectedIntro(st.id)
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          padding: '10px',
+                          border: `3px solid ${t.border}`,
+                          background: isSel ? t.accent : '#FFFFFF',
+                          color: isSel ? '#FFFFFF' : t.ink,
+                          boxShadow: isSel ? `2px 2px 0px ${t.border}` : `4px 4px 0px ${t.border}`,
+                          transform: isSel ? 'translate(2px, 2px)' : 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 4,
+                          borderRadius: 2,
+                        }}
+                        className="font-silkscreen"
+                      >
+                        <div style={{ fontSize: '11px', fontWeight: 700 }}>{st.name}</div>
+                        <div style={{ fontSize: '9px', opacity: 0.85, lineHeight: 1.3 }}>{st.badge}</div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Field 8: Secret Note with Randomizer & Catalog */}
               <div style={{ display: 'grid', gap: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
                   <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
-                    7. PERSONAL NOTE INSIDE LETTER
+                    8. PERSONAL NOTE INSIDE LETTER
                   </span>
 
                   <div style={{ display: 'flex', gap: 8 }}>
@@ -558,10 +587,13 @@ export default function Generator() {
                     textAlign: 'center',
                   }}
                 >
-                  <div style={{ fontSize: '20px', marginBottom: 4 }}>
-                    {selectedAvatar === 'cat' ? '🐱' : '🧑‍🎨'}
+                  <div style={{ fontSize: '26px', marginBottom: 6 }}>
+                    {selectedAvatar === 'kitty' ? '🐱' : selectedAvatar === 'puppy' ? '🐶' : selectedAvatar === 'bear' ? '🧸' : '🧑‍💻'}
                   </div>
-                  <div className="font-pixel" style={{ fontSize: '12px', color: t.accent, marginBottom: 4 }}>
+                  <div className="font-pixel" style={{ fontSize: '9px', color: t.muted, marginBottom: 4 }}>
+                    {dialogueIntros[selectedIntro]?.badge || '👾 CODE & HESITATION'}
+                  </div>
+                  <div className="font-pixel" style={{ fontSize: '13px', color: t.accent, marginBottom: 6 }}>
                     {modes[selectedMode]?.badge || 'I REALLY LIKE YOU.'}
                   </div>
                   <div className="font-silkscreen" style={{ fontSize: '11px', color: t.ink, marginBottom: 4 }}>

@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getTheme, getMode, sanitizeName } from '../lib/theme.js'
+import { getTheme, getMode, getDialogueIntro, sanitizeName } from '../lib/theme.js'
 import PixelConsole from '../components/PixelConsole.jsx'
 import { PixelHeart, PixelCharacter, PixelEnvelope } from '../components/PixelSprites.jsx'
 import Credit from '../components/Credit.jsx'
@@ -27,16 +27,18 @@ function useDecodedParams() {
   const themeKey = search.get('theme') || 'blush'
   const modeKey = search.get('mode') || 'romantic'
   const stickerKey = search.get('sticker') || 'fragile'
-  const avatarKey = search.get('avatar') || 'cat'
+  const avatarKey = search.get('avatar') || 'kitty'
+  const introKey = search.get('intro') || 'dev'
 
   const theme = getTheme(themeKey)
   const mode = getMode(modeKey)
+  const intro = getDialogueIntro(introKey)
 
-  return { display, from, customNote, theme, mode, stickerKey, avatarKey }
+  return { display, from, customNote, theme, mode, stickerKey, avatarKey, intro }
 }
 
 export default function Experience() {
-  const { display, from, customNote, theme, mode, stickerKey, avatarKey } = useDecodedParams()
+  const { display, from, customNote, theme, mode, stickerKey, avatarKey, intro } = useDecodedParams()
   const [scene, setScene] = useState(0)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [bgmEnabled, setBgmEnabled] = useState(false)
@@ -180,8 +182,10 @@ export default function Experience() {
             <ScreenHonestTalk
               key="s1"
               display={display}
+              from={from}
               theme={theme}
               mode={mode}
+              intro={intro}
               soundEnabled={soundEnabled}
               onNext={nextScene}
             />
@@ -389,11 +393,13 @@ function ScreenBoot({ display, from, theme, avatar = 'cat', soundEnabled, onPres
 
 /* =========================================================
    SCREEN 1: SINCERE HONEST TALK
-   (Using mode-specific text & backspace effect)
+   (Using custom dialogue story & backspace hesitation effect)
 ========================================================= */
-function ScreenHonestTalk({ display, theme, mode, soundEnabled, onNext }) {
-  const tentativeText = mode.tentativeText
-  const honestTruth = mode.honestTruth(display)
+function ScreenHonestTalk({ display, from, theme, mode, intro, soundEnabled, onNext }) {
+  const tentativeText = intro?.tentativeText || mode.tentativeText
+  const honestTruth = intro?.honestTruth
+    ? intro.honestTruth(display, from)
+    : mode.honestTruth(display, from)
 
   const [text, setText] = useState('')
   const [phase, setPhase] = useState('typing_tentative')

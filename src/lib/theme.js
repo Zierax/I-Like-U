@@ -76,9 +76,9 @@ export const themes = {
   },
 }
 
-import { modes, getModeData } from './messages.js'
+import { modes, getModeData, dialogueIntros, getDialogueIntro } from './messages.js'
 
-export { modes, getModeData }
+export { modes, getModeData, dialogueIntros, getDialogueIntro }
 
 // Console Stickers
 export const stickers = {
@@ -113,7 +113,7 @@ export function getTheme(key) {
 }
 
 export function getMode(key) {
-  return modes[key] || modes.romantic
+  return getModeData(key)
 }
 
 export function getSticker(key) {
@@ -127,14 +127,15 @@ export function sanitizeName(raw) {
   return t.replace(/[<>]/g, '')
 }
 
-export function buildLink({ name, from, theme, mode, sticker, avatar, note }) {
+export function buildLink({ name, from, theme, mode, sticker, avatar, intro, note }) {
   const n = encodeURIComponent(sanitizeName(name) || 'Maya')
   const params = new URLSearchParams()
   if (from && from.trim()) params.set('from', from.trim().slice(0, 32))
   if (theme && theme !== 'blush') params.set('theme', theme)
   if (mode && mode !== 'romantic') params.set('mode', mode)
   if (sticker && sticker !== 'fragile') params.set('sticker', sticker)
-  if (avatar && avatar !== 'cat') params.set('avatar', avatar)
+  if (avatar && avatar !== 'kitty') params.set('avatar', avatar)
+  if (intro && intro !== 'dev') params.set('intro', intro)
   if (note && note.trim()) params.set('note', note.trim().slice(0, 120))
   const qs = params.toString()
   return `/for/${n}${qs ? `?${qs}` : ''}`

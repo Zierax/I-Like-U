@@ -8,7 +8,7 @@ export const modes = {
     badge: 'I REALLY, REALLY LIKE YOU.',
     tentativeText: 'I was just wondering if maybe we could hang out some—',
     honestTruth: (display, from) =>
-      `Actually...\nI don't just want to 'hang out'.\nI can write hundreds of lines of code, but saying how I feel to you? I completely freeze up.\nSo I spent hours building this little 8-bit note for you instead.`,
+      `Actually...\nI don't just want to 'hang out'.\nI can write thousands of lines of code, but saying how I feel to you? I completely freeze up.\nSo I spent hours building this little 8-bit note for you instead.`,
     crossedOut: { strikethrough: 'nice', replacement: 'extraordinary' },
     subtitle: (display) => `For ${display}. No pressure, no expectations at all. I just wanted you to know how special you are to me.`,
     reasons: [
@@ -185,3 +185,44 @@ export function getRandomNote() {
 export function getModeData(modeKey) {
   return modes[modeKey] || modes.romantic
 }
+
+// 4 Dialogue Story Styles (The Shy Developer is the signature Default!)
+export const dialogueIntros = {
+  dev: {
+    id: 'dev',
+    name: 'The Shy Developer (Default)',
+    badge: '👾 CODE & HESITATION',
+    tentativeText: 'I was just wondering if maybe we could hang out some—',
+    honestTruth: (display, from) =>
+      `Actually...\nI don't just want to 'hang out'.\nI can write thousands of lines of code, but saying how I feel in person? I completely freeze up.\nSo I spent hours building this little 8-bit note for you instead.`,
+  },
+  overthinker: {
+    id: 'overthinker',
+    name: 'The Overthinker',
+    badge: '💭 WROTE & DELETED 40 TIMES',
+    tentativeText: 'I wrote and deleted this message like 40 times...',
+    honestTruth: (display, from) =>
+      `Actually...\nI overthink literally everything in my life.\nEvery word, every step, every scenario.\nExcept how much I like you, ${display}. That was the only thing that felt completely simple.`,
+  },
+  daydreamer: {
+    id: 'daydreamer',
+    name: 'The Daydreamer',
+    badge: '✨ WAITING FOR COURAGE',
+    tentativeText: 'Hey... I have been trying to find the right time to say this—',
+    honestTruth: (display, from) =>
+      `Actually...\nThere is never a 'perfect' time.\nEvery time you smile or talk to me, my entire day gets 100x better.\nI just couldn't keep this secret to myself anymore, ${display}.`,
+  },
+  direct: {
+    id: 'direct',
+    name: 'Direct & Sincere',
+    badge: '💌 NO GAMES OR DRAMA',
+    tentativeText: 'I was thinking of keeping this to myself, but—',
+    honestTruth: (display, from) =>
+      `Actually...\nNo games, no hesitations, no drama.\nYou are simply one of the most incredible people I have ever met, ${display}.\nAnd I just really, really wanted you to know.`,
+  },
+}
+
+export function getDialogueIntro(introKey) {
+  return dialogueIntros[introKey] || dialogueIntros.dev
+}
+
