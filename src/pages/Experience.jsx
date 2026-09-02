@@ -5,8 +5,14 @@ import { getTheme, sanitizeName } from '../lib/theme.js'
 import PixelConsole from '../components/PixelConsole.jsx'
 import { PixelHeart, PixelCharacter, PixelEnvelope } from '../components/PixelSprites.jsx'
 import Credit from '../components/Credit.jsx'
-import { playTypeBlip, playHeartChirp, playLetterOpenChime } from '../lib/sound.js'
-import { Volume2, VolumeX, Sparkles, Send } from 'lucide-react'
+import {
+  playTypeBlip,
+  playBackspaceSound,
+  playHeartChirp,
+  playLetterOpenChime,
+  playPuffSound,
+} from '../lib/sound.js'
+import { Volume2, VolumeX } from 'lucide-react'
 
 function useDecodedParams() {
   const { name } = useParams()
@@ -118,6 +124,7 @@ export default function Experience() {
               display={display}
               from={from}
               theme={theme}
+              soundEnabled={soundEnabled}
               onPressStart={nextScene}
             />
           )}
@@ -177,8 +184,17 @@ export default function Experience() {
 
 /* =========================================================
    SCREEN 0: CARTRIDGE BOOT
+   (With Human Imperfection: Blow on cartridge prompt)
 ========================================================= */
-function ScreenBoot({ display, from, theme, onPressStart }) {
+function ScreenBoot({ display, from, theme, soundEnabled, onPressStart }) {
+  const [blowing, setBlowing] = useState(false)
+
+  function handleBlow() {
+    playPuffSound(soundEnabled)
+    setBlowing(true)
+    setTimeout(() => setBlowing(false), 800)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -191,32 +207,60 @@ function ScreenBoot({ display, from, theme, onPressStart }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         textAlign: 'center',
+        position: 'relative',
       }}
     >
+      {/* Puff Effect Overlay */}
+      <AnimatePresence>
+        {blowing && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 0.8, scale: 1.2 }}
+            exit={{ opacity: 0 }}
+            className="font-pixel"
+            style={{
+              position: 'absolute',
+              top: '35%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              background: '#FFFFFF',
+              border: `2px solid ${theme.border}`,
+              padding: '6px 12px',
+              fontSize: '10px',
+              color: theme.accent,
+              zIndex: 30,
+              boxShadow: `3px 3px 0px ${theme.border}`,
+            }}
+          >
+            *WHOOSH!* CARTRIDGE CLEANED ✨
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div
         className="font-pixel"
         style={{
           fontSize: '9px',
           color: theme.accent,
           letterSpacing: '0.1em',
-          marginTop: 6,
+          marginTop: 4,
         }}
       >
         ★ RETRO LOVE NOTE ★
       </div>
 
-      <div style={{ margin: '14px 0' }} className="animate-pixel-float">
-        <PixelCharacter size={72} />
+      <div style={{ margin: '10px 0' }} className="animate-pixel-float">
+        <PixelCharacter size={68} isBlushing={blowing} />
       </div>
 
       <div>
         <div
           className="font-pixel"
           style={{
-            fontSize: '15px',
+            fontSize: '14px',
             color: theme.ink,
             lineHeight: 1.4,
-            marginBottom: 6,
+            marginBottom: 4,
           }}
         >
           HI, {display.toUpperCase()}!
@@ -229,11 +273,29 @@ function ScreenBoot({ display, from, theme, onPressStart }) {
             color: theme.muted,
             lineHeight: 1.4,
             maxWidth: 240,
-            margin: '0 auto',
+            margin: '0 auto 8px',
           }}
         >
           {from ? `From ${from} with care.` : 'A tiny 8-bit world built for you.'}
         </div>
+
+        {/* Nostalgic "Blow on Cartridge" button */}
+        <button
+          type="button"
+          onClick={handleBlow}
+          className="font-silkscreen"
+          style={{
+            background: 'transparent',
+            border: `1px dashed ${theme.border}`,
+            color: theme.muted,
+            fontSize: '9px',
+            padding: '3px 8px',
+            borderRadius: 2,
+            cursor: 'pointer',
+          }}
+        >
+          💨 IF SCREEN FREEZES: BLOW ON CARTRIDGE
+        </button>
       </div>
 
       {/* Blinking Press Start Prompt */}
@@ -248,7 +310,7 @@ function ScreenBoot({ display, from, theme, onPressStart }) {
           color: theme.accent,
           fontSize: '11px',
           cursor: 'pointer',
-          padding: '10px 0',
+          padding: '8px 0',
         }}
       >
         ▶ PRESS (A) TO START ▼
@@ -258,26 +320,68 @@ function ScreenBoot({ display, from, theme, onPressStart }) {
 }
 
 /* =========================================================
-   SCREEN 1: SINCERE HONEST TALK (NO CRINGE MEMES)
+   SCREEN 1: SINCERE HONEST TALK
+   (With Human Imperfection: Hesitation, Backspace & Real Truth)
 ========================================================= */
 function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
-  const fullText = `Hey ${display}...\nI know I'm usually quiet about things like this.\nI can write hundreds of lines of code, but saying how I feel in person? I freeze up.\nSo I spent hours building this 8-bit note for you instead.`
+  const tentativeText = `I was just wondering if maybe we could hang out some—`
+  const honestTruth = `Actually...\nI don't just want to 'hang out'.\nI can write hundreds of lines of code, but saying how I feel in person? I freeze up.\nSo I spent hours building this little 8-bit note for you instead.`
 
-  const [displayed, setDisplayed] = useState('')
+  const [text, setText] = useState('')
+  const [phase, setPhase] = useState('typing_tentative') // typing_tentative -> pausing -> backspacing -> typing_truth -> done
 
   useEffect(() => {
-    let index = 0
-    const timer = setInterval(() => {
-      index++
-      if (index <= fullText.length) {
-        setDisplayed(fullText.slice(0, index))
-        if (index % 3 === 0) playTypeBlip(soundEnabled)
-      } else {
-        clearInterval(timer)
-      }
-    }, 40)
+    let timer
+
+    // Phase 1: Type tentative thought
+    if (phase === 'typing_tentative') {
+      let idx = 0
+      timer = setInterval(() => {
+        idx++
+        if (idx <= tentativeText.length) {
+          setText(tentativeText.slice(0, idx))
+          if (idx % 2 === 0) playTypeBlip(soundEnabled)
+        } else {
+          clearInterval(timer)
+          // Pause before hesitating & backspacing
+          setTimeout(() => setPhase('backspacing'), 700)
+        }
+      }, 45)
+    }
+
+    // Phase 2: Backspace tentatively
+    else if (phase === 'backspacing') {
+      let current = tentativeText
+      timer = setInterval(() => {
+        if (current.length > 0) {
+          current = current.slice(0, -1)
+          setText(current)
+          playBackspaceSound(soundEnabled)
+        } else {
+          clearInterval(timer)
+          // Pause a beat after clearing, then type the honest truth
+          setTimeout(() => setPhase('typing_truth'), 350)
+        }
+      }, 25)
+    }
+
+    // Phase 3: Type the honest truth
+    else if (phase === 'typing_truth') {
+      let idx = 0
+      timer = setInterval(() => {
+        idx++
+        if (idx <= honestTruth.length) {
+          setText(honestTruth.slice(0, idx))
+          if (idx % 3 === 0) playTypeBlip(soundEnabled)
+        } else {
+          clearInterval(timer)
+          setPhase('done')
+        }
+      }, 38)
+    }
+
     return () => clearInterval(timer)
-  }, [fullText, soundEnabled])
+  }, [phase, soundEnabled, tentativeText, honestTruth])
 
   return (
     <motion.div
@@ -307,7 +411,7 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
         <span>1/3</span>
       </div>
 
-      {/* Sincere RPG Dialogue Box */}
+      {/* Sincere RPG Dialogue Box with Backspace Effect */}
       <div
         className="font-silkscreen"
         style={{
@@ -323,8 +427,8 @@ function ScreenHonestTalk({ display, theme, soundEnabled, onNext }) {
           boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)',
         }}
       >
-        {displayed}
-        {displayed.length < fullText.length && (
+        {text}
+        {phase !== 'done' && (
           <span className="pixel-blink" style={{ color: theme.accent, marginLeft: 2 }}>
             ▍
           </span>
@@ -489,6 +593,7 @@ function ScreenLittleThings({ theme, soundEnabled, onNext }) {
 
 /* =========================================================
    SCREEN 3: THE SECRET LETTER REVEAL
+   (With Human Imperfection: Crossed-out handwritten word)
 ========================================================= */
 function ScreenLetterReveal({ display, customNote, theme, onNext }) {
   const [opened, setOpened] = useState(false)
@@ -571,6 +676,29 @@ function ScreenLetterReveal({ display, customNote, theme, onNext }) {
               }}
             >
               I LIKE YOU.
+            </div>
+
+            {/* Human Imperfection: Crossed-out handwritten word */}
+            <div
+              className="font-silkscreen"
+              style={{
+                fontSize: '11px',
+                color: theme.ink,
+                margin: '6px 0',
+              }}
+            >
+              You are really{' '}
+              <span
+                style={{
+                  textDecoration: 'line-through',
+                  textDecorationColor: '#FF4370',
+                  textDecorationThickness: '2px',
+                  opacity: 0.5,
+                }}
+              >
+                nice
+              </span>{' '}
+              <span style={{ color: theme.accent, fontWeight: 700 }}>extraordinary</span>.
             </div>
 
             {customNote && (

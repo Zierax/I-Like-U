@@ -20,7 +20,7 @@ export default function Generator() {
 
   const previewPath = useMemo(() => {
     return buildLink({
-      name: theirName || 'Natalie',
+      name: theirName || 'Maya',
       from: yourName,
       theme: selectedTheme,
       note: customNote,
@@ -152,7 +152,7 @@ export default function Generator() {
                 <input
                   value={theirName}
                   onChange={(e) => setTheirName(e.target.value)}
-                  placeholder="e.g. Natalie"
+                  placeholder="e.g. Maya"
                   maxLength={32}
                   className="font-silkscreen"
                   style={{
@@ -176,7 +176,7 @@ export default function Generator() {
                 <input
                   value={yourName}
                   onChange={(e) => setYourName(e.target.value)}
-                  placeholder="e.g. Ziad (or secret)"
+                  placeholder="e.g. Leo (or secret)"
                   maxLength={32}
                   className="font-silkscreen"
                   style={{
@@ -402,7 +402,7 @@ export default function Generator() {
           {/* Test Sample Link */}
           <div style={{ textAlign: 'center' }}>
             <Link
-              to="/for/Natalie?from=Ziad&theme=blush"
+              to="/for/Maya?from=Leo&theme=blush"
               className="font-silkscreen"
               style={{
                 fontSize: '13px',
@@ -413,7 +413,7 @@ export default function Generator() {
                 gap: 6,
               }}
             >
-              <span>▶ PLAY SAMPLE: FOR NATALIE</span>
+              <span>▶ PLAY SAMPLE: FOR MAYA</span>
             </Link>
           </div>
 

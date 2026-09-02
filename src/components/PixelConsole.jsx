@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
-import { playConsoleButton } from '../lib/sound.js'
+import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { playConsoleButton, playHeartChirp } from '../lib/sound.js'
 
 export default function PixelConsole({
   children,
@@ -9,12 +10,27 @@ export default function PixelConsole({
   onPressB,
   onPressDpad,
 }) {
+  const [bToast, setBToast] = useState('')
+  const [stickerWiggle, setStickerWiggle] = useState(false)
+
   function handleButton(action, callback) {
     playConsoleButton(soundEnabled)
+
+    if (action === 'B') {
+      setBToast("Wait, don't press B! I spent 3 weeks building up the courage to show you this! 🙈")
+      setTimeout(() => setBToast(''), 3500)
+    }
+
     if (callback) callback()
   }
 
-  // Keyboard controls listener (Arrow keys, Space, Enter, Escape)
+  function handleStickerTap() {
+    playHeartChirp(soundEnabled)
+    setStickerWiggle(true)
+    setTimeout(() => setStickerWiggle(false), 600)
+  }
+
+  // Keyboard controls listener
   useEffect(() => {
     function handleKeyDown(e) {
       if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return
@@ -43,8 +59,40 @@ export default function PixelConsole({
         maxWidth: 440,
         margin: '0 auto',
         userSelect: 'none',
+        position: 'relative',
       }}
     >
+      {/* Easter Egg: (B) Button Blush Speech Bubble */}
+      <AnimatePresence>
+        {bToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.9 }}
+            className="font-silkscreen"
+            style={{
+              position: 'absolute',
+              top: -46,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#FFE3EC',
+              color: '#C9184A',
+              border: `2px solid ${theme.border}`,
+              padding: '8px 14px',
+              borderRadius: 4,
+              fontSize: '11px',
+              lineHeight: 1.4,
+              zIndex: 100,
+              boxShadow: `3px 3px 0px ${theme.border}`,
+              maxWidth: 320,
+              textAlign: 'center',
+            }}
+          >
+            {bToast}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Handheld Console Outer Body */}
       <div
         style={{
@@ -56,6 +104,35 @@ export default function PixelConsole({
           position: 'relative',
         }}
       >
+        {/* Human Imperfection Touch: The Crooked Masking Tape Sticker */}
+        <motion.div
+          onClick={handleStickerTap}
+          animate={stickerWiggle ? { rotate: [3.5, -4, 5, -2, 3.5] } : { rotate: 3.5 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="font-silkscreen"
+          style={{
+            position: 'absolute',
+            top: -14,
+            right: 18,
+            background: '#FFF9D2',
+            color: '#5C4314',
+            border: `1.5px dashed ${theme.border}`,
+            padding: '4px 10px',
+            fontSize: '9px',
+            fontWeight: 700,
+            boxShadow: '1px 2px 0 rgba(0,0,0,0.15)',
+            cursor: 'pointer',
+            zIndex: 30,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+          }}
+          title="Click me!"
+        >
+          <span>⚠ FRAGILE HEART · HANDLE WITH CARE</span>
+        </motion.div>
+
         {/* Top Edge Notch Detail */}
         <div
           style={{

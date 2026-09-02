@@ -50,8 +50,8 @@ export function PixelHeart({ size = 24, color = '#FF4370', border = '#2B1A24', c
   )
 }
 
-// Cute 8-bit Pixel Character Holding Love Letter
-export function PixelCharacter({ size = 64, className = '' }) {
+// Cute 8-bit Pixel Character Holding Love Letter (with optional blushing mode)
+export function PixelCharacter({ size = 64, isBlushing = false, className = '' }) {
   return (
     <svg
       width={size}
@@ -62,6 +62,14 @@ export function PixelCharacter({ size = 64, className = '' }) {
       className={className}
       style={{ imageRendering: 'pixelated', display: 'inline-block' }}
     >
+      {/* Exclamation or Sweat Drop if Blushing */}
+      {isBlushing && (
+        <>
+          <rect x="13" y="1" width="1" height="2" fill="#3B82F6" />
+          <rect x="12" y="2" width="1" height="1" fill="#3B82F6" />
+        </>
+      )}
+
       {/* Hair (Dark Cocoa) */}
       <rect x="5" y="1" width="6" height="1" fill="#2B1A24" />
       <rect x="4" y="2" width="8" height="2" fill="#2B1A24" />
@@ -70,12 +78,23 @@ export function PixelCharacter({ size = 64, className = '' }) {
 
       {/* Face (Warm Peach) */}
       <rect x="5" y="4" width="6" height="4" fill="#FFDFC4" />
-      {/* Eyes (Dark pixel dots) */}
-      <rect x="6" y="5" width="1" height="1" fill="#2B1A24" />
-      <rect x="9" y="5" width="1" height="1" fill="#2B1A24" />
-      {/* Cute Blush (Soft Rose) */}
-      <rect x="5" y="6" width="1" height="1" fill="#FF8DA1" />
-      <rect x="10" y="6" width="1" height="1" fill="#FF8DA1" />
+      {/* Eyes (Dark pixel dots or blushing squint) */}
+      {!isBlushing ? (
+        <>
+          <rect x="6" y="5" width="1" height="1" fill="#2B1A24" />
+          <rect x="9" y="5" width="1" height="1" fill="#2B1A24" />
+        </>
+      ) : (
+        <>
+          <rect x="6" y="5" width="2" height="1" fill="#2B1A24" />
+          <rect x="9" y="5" width="2" height="1" fill="#2B1A24" />
+        </>
+      )}
+
+      {/* Cute Blush (Subtle pink or Deep Red if Blushing) */}
+      <rect x="5" y="6" width={isBlushing ? 2 : 1} height="1" fill={isBlushing ? '#FF3366' : '#FF8DA1'} />
+      <rect x={isBlushing ? 9 : 10} y="6" width={isBlushing ? 2 : 1} height="1" fill={isBlushing ? '#FF3366' : '#FF8DA1'} />
+      
       {/* Shy Smile */}
       <rect x="7" y="7" width="2" height="1" fill="#2B1A24" />
 
@@ -94,7 +113,7 @@ export function PixelCharacter({ size = 64, className = '' }) {
       <rect x="2" y="11" width="2" height="1" fill="#FF4370" />
 
       {/* Right Hand (Waving) */}
-      <rect x="12" y="7" width="2" height="2" fill="#FFDFC4" />
+      <rect x="12" y={isBlushing ? 8 : 7} width="2" height="2" fill="#FFDFC4" />
 
       {/* Pants (Dark Indigo) */}
       <rect x="5" y="12" width="6" height="2" fill="#3D3252" />
