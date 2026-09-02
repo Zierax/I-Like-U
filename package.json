@@ -1,7 +1,13 @@
 {
   "name": "i-like-u",
-  "private": true,
   "version": "1.0.0",
+  "description": "An open-source 8-bit retro handheld love note generator",
+  "author": "Zierax",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zierax/I-Like-U.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
