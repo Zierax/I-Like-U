@@ -3,16 +3,18 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { Copy, Share2, QrCode, ExternalLink, Check } from 'lucide-react'
-import { themes, buildLink, sanitizeName, getTheme } from '../lib/theme.js'
+import { themes, modes, stickers, buildLink, sanitizeName, getTheme } from '../lib/theme.js'
 import Credit from '../components/Credit.jsx'
-import PixelHeart from '../components/PixelHeart.jsx'
-import { play8BitSelect, play8BitVictory } from '../lib/sound.js'
+import { PixelHeart } from '../components/PixelSprites.jsx'
+import { playConsoleButton } from '../lib/sound.js'
 
 export default function Generator() {
   const [theirName, setTheirName] = useState('')
   const [yourName, setYourName] = useState('')
   const [customNote, setCustomNote] = useState('')
   const [selectedTheme, setSelectedTheme] = useState('blush')
+  const [selectedMode, setSelectedMode] = useState('romantic')
+  const [selectedSticker, setSelectedSticker] = useState('fragile')
   const [copied, setCopied] = useState(false)
   const [showQR, setShowQR] = useState(false)
 
@@ -23,15 +25,17 @@ export default function Generator() {
       name: theirName || 'Maya',
       from: yourName,
       theme: selectedTheme,
+      mode: selectedMode,
+      sticker: selectedSticker,
       note: customNote,
     })
-  }, [theirName, yourName, selectedTheme, customNote])
+  }, [theirName, yourName, selectedTheme, selectedMode, selectedSticker, customNote])
 
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
   const fullUrl = origin ? `${origin}${previewPath}` : previewPath
 
   async function copyLink() {
-    play8BitSelect(true)
+    playConsoleButton(true)
     try {
       await navigator.clipboard.writeText(fullUrl)
       setCopied(true)
@@ -49,12 +53,12 @@ export default function Generator() {
   }
 
   async function shareLink() {
-    play8BitSelect(true)
+    playConsoleButton(true)
     if (navigator.share) {
       try {
         await navigator.share({
           title: `8-Bit Love Quest for ${sanitizeName(theirName) || 'someone'}`,
-          text: 'Someone built an 8-bit love quest for you! ♥',
+          text: 'Someone built a retro 8-bit love quest for you! ♥',
           url: fullUrl,
         })
       } catch {}
@@ -101,7 +105,6 @@ export default function Generator() {
       {/* Main Form */}
       <main style={{ maxWidth: 640, width: '100%', margin: '0 auto', flex: 1, paddingBottom: 48 }}>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-          
           <div className="font-pixel" style={{ fontSize: '10px', color: t.accent, marginBottom: 12 }}>
             ★ RETRO LOVE NOTE GENERATOR ★
           </div>
@@ -116,7 +119,7 @@ export default function Generator() {
             }}
           >
             CREATE AN 8-BIT <br />
-            <span style={{ color: t.accent }}>LOVE QUEST</span>
+            <span style={{ color: t.accent }}>LOVE CARTRIDGE</span>
           </h1>
 
           <p
@@ -128,7 +131,7 @@ export default function Generator() {
               marginBottom: 32,
             }}
           >
-            Generate a personalized retro quest with hearts, 8-bit sound effects, and your secret confession letter.
+            Customize the message tone, console shell color, and secret sticker for someone special.
           </p>
 
           {/* Form Card */}
@@ -142,8 +145,7 @@ export default function Generator() {
               marginBottom: 28,
             }}
           >
-            <div style={{ display: 'grid', gap: 22 }}>
-              
+            <div style={{ display: 'grid', gap: 24 }}>
               {/* Field 1: Recipient Name */}
               <label style={{ display: 'grid', gap: 8 }}>
                 <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
@@ -192,10 +194,141 @@ export default function Generator() {
                 />
               </label>
 
-              {/* Field 3: Secret Quest Note */}
+              {/* Field 3: Experience Mode */}
+              <div style={{ display: 'grid', gap: 10 }}>
+                <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
+                  3. CHOOSE EXPERIENCE TONE / MODE
+                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8 }}>
+                  {Object.values(modes).map((m) => {
+                    const isSelected = selectedMode === m.id
+                    return (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => {
+                          playConsoleButton(true)
+                          setSelectedMode(m.id)
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          padding: '12px 10px',
+                          border: `3px solid ${t.border}`,
+                          background: isSelected ? t.accent : '#FFFFFF',
+                          color: isSelected ? '#FFFFFF' : t.ink,
+                          boxShadow: isSelected ? `2px 2px 0px ${t.border}` : `4px 4px 0px ${t.border}`,
+                          transform: isSelected ? 'translate(2px, 2px)' : 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 4,
+                          borderRadius: 2,
+                        }}
+                        className="font-silkscreen"
+                      >
+                        <span style={{ fontSize: '11px', fontWeight: 700 }}>{m.name}</span>
+                        <span style={{ fontSize: '9px', opacity: 0.85, lineHeight: 1.3 }}>
+                          "{m.badge}"
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Field 4: Console Shell Color Palette */}
+              <div style={{ display: 'grid', gap: 10 }}>
+                <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
+                  4. CONSOLE SHELL COLOR
+                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 8 }}>
+                  {Object.values(themes).map((themeOpt) => {
+                    const isSelected = selectedTheme === themeOpt.id
+                    return (
+                      <button
+                        key={themeOpt.id}
+                        type="button"
+                        onClick={() => {
+                          playConsoleButton(true)
+                          setSelectedTheme(themeOpt.id)
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          padding: '10px 8px',
+                          border: `3px solid ${themeOpt.border}`,
+                          background: isSelected ? themeOpt.accent : themeOpt.card,
+                          color: isSelected ? '#FFFFFF' : themeOpt.ink,
+                          boxShadow: isSelected ? `2px 2px 0px ${themeOpt.border}` : `4px 4px 0px ${themeOpt.border}`,
+                          transform: isSelected ? 'translate(2px, 2px)' : 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 4,
+                          borderRadius: 2,
+                        }}
+                        className="font-silkscreen"
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span
+                            style={{
+                              width: 10,
+                              height: 10,
+                              background: themeOpt.previewColor,
+                              border: `1px solid ${themeOpt.border}`,
+                              display: 'inline-block',
+                            }}
+                          />
+                          <span style={{ fontSize: '10px', fontWeight: 700 }}>
+                            {themeOpt.name}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Field 5: Crooked Sticker on Console */}
+              <div style={{ display: 'grid', gap: 10 }}>
+                <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
+                  5. RETRO CONSOLE STICKER
+                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8 }}>
+                  {Object.values(stickers).map((stk) => {
+                    const isSelected = selectedSticker === stk.id
+                    return (
+                      <button
+                        key={stk.id}
+                        type="button"
+                        onClick={() => {
+                          playConsoleButton(true)
+                          setSelectedSticker(stk.id)
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          padding: '10px 8px',
+                          border: `2px dashed ${t.border}`,
+                          background: isSelected ? t.highlight : stk.bg,
+                          color: stk.color,
+                          boxShadow: isSelected ? `2px 2px 0px ${t.border}` : 'none',
+                          cursor: 'pointer',
+                          borderRadius: 2,
+                          fontSize: '10px',
+                          fontWeight: 700,
+                        }}
+                        className="font-silkscreen"
+                      >
+                        {stk.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Field 6: Secret Quest Note */}
               <label style={{ display: 'grid', gap: 8 }}>
                 <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
-                  3. SECRET NOTE INSIDE CHEST (OPTIONAL)
+                  6. PERSONAL NOTE INSIDE LETTER (OPTIONAL)
                 </span>
                 <input
                   value={customNote}
@@ -216,61 +349,6 @@ export default function Generator() {
                 />
               </label>
 
-              {/* Palette Choice */}
-              <div style={{ display: 'grid', gap: 10 }}>
-                <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
-                  4. CARTRIDGE COLOR PALETTE
-                </span>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10 }}>
-                  {Object.values(themes).map((themeOpt) => {
-                    const isSelected = selectedTheme === themeOpt.id
-                    return (
-                      <button
-                        key={themeOpt.id}
-                        type="button"
-                        onClick={() => {
-                          play8BitSelect(true)
-                          setSelectedTheme(themeOpt.id)
-                        }}
-                        style={{
-                          textAlign: 'left',
-                          padding: '12px',
-                          border: `3px solid ${themeOpt.border}`,
-                          background: isSelected ? themeOpt.accent : themeOpt.card,
-                          color: isSelected ? '#FFFFFF' : themeOpt.ink,
-                          boxShadow: isSelected ? `2px 2px 0px ${themeOpt.border}` : `4px 4px 0px ${themeOpt.border}`,
-                          transform: isSelected ? 'translate(2px, 2px)' : 'none',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 6,
-                          borderRadius: 2,
-                        }}
-                        className="font-silkscreen"
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span
-                            style={{
-                              width: 12,
-                              height: 12,
-                              background: themeOpt.previewColor,
-                              border: `1px solid ${themeOpt.border}`,
-                              display: 'inline-block',
-                            }}
-                          />
-                          <span style={{ fontSize: '11px', fontWeight: 700 }}>
-                            {themeOpt.name}
-                          </span>
-                        </div>
-                        <span style={{ fontSize: '10px', opacity: 0.8 }}>
-                          {themeOpt.desc}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
               {/* Live Preview Box */}
               <div
                 style={{
@@ -286,7 +364,7 @@ export default function Generator() {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '11px', fontWeight: 700, color: t.accent }}>
-                    [ GENERATED QUEST URL ]
+                    [ GENERATED CARTRIDGE URL ]
                   </span>
                   <Link
                     to={previewPath}
@@ -301,7 +379,7 @@ export default function Generator() {
                       gap: 4,
                     }}
                   >
-                    <span>TEST QUEST</span>
+                    <span>TEST CARTRIDGE</span>
                     <ExternalLink size={12} />
                   </Link>
                 </div>
@@ -324,7 +402,7 @@ export default function Generator() {
                   }}
                 >
                   {copied ? <Check size={16} /> : <Copy size={16} />}
-                  <span>{copied ? 'LINK COPIED! ★' : 'COPY QUEST LINK'}</span>
+                  <span>{copied ? 'LINK COPIED! ★' : 'COPY CARTRIDGE LINK'}</span>
                 </button>
 
                 <button
@@ -345,7 +423,7 @@ export default function Generator() {
                 <button
                   type="button"
                   onClick={() => {
-                    play8BitSelect(true)
+                    playConsoleButton(true)
                     setShowQR(!showQR)
                   }}
                   className="pixel-btn pixel-btn-secondary"
@@ -389,13 +467,12 @@ export default function Generator() {
                         <QRCodeSVG value={fullUrl} size={160} fgColor={t.border} bgColor="#FFFFFF" />
                       </div>
                       <span className="font-silkscreen" style={{ fontSize: '11px', color: t.muted }}>
-                        Scan with camera to launch 8-bit quest!
+                        Scan with camera to launch 8-bit cartridge!
                       </span>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
-
             </div>
           </div>
 
@@ -416,7 +493,6 @@ export default function Generator() {
               <span>▶ PLAY SAMPLE: FOR MAYA</span>
             </Link>
           </div>
-
         </motion.div>
       </main>
 
