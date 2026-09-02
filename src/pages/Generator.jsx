@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { Copy, Share2, QrCode, ExternalLink, Check } from 'lucide-react'
 import { themes, modes, stickers, buildLink, sanitizeName, getTheme } from '../lib/theme.js'
+import { NOTE_CATALOG, getRandomNote } from '../lib/messages.js'
 import Credit from '../components/Credit.jsx'
 import { PixelHeart } from '../components/PixelSprites.jsx'
-import { playConsoleButton } from '../lib/sound.js'
+import { playConsoleButton, playHeartChirp, playSparkle } from '../lib/sound.js'
 
 export default function Generator() {
   const [theirName, setTheirName] = useState('')
@@ -15,8 +16,10 @@ export default function Generator() {
   const [selectedTheme, setSelectedTheme] = useState('blush')
   const [selectedMode, setSelectedMode] = useState('romantic')
   const [selectedSticker, setSelectedSticker] = useState('fragile')
+  const [selectedAvatar, setSelectedAvatar] = useState('cat')
   const [copied, setCopied] = useState(false)
   const [showQR, setShowQR] = useState(false)
+  const [showDirectory, setShowDirectory] = useState(false)
 
   const t = getTheme(selectedTheme)
 
@@ -27,9 +30,10 @@ export default function Generator() {
       theme: selectedTheme,
       mode: selectedMode,
       sticker: selectedSticker,
+      avatar: selectedAvatar,
       note: customNote,
     })
-  }, [theirName, yourName, selectedTheme, selectedMode, selectedSticker, customNote])
+  }, [theirName, yourName, selectedTheme, selectedMode, selectedSticker, selectedAvatar, customNote])
 
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
   const fullUrl = origin ? `${origin}${previewPath}` : previewPath
@@ -325,15 +329,128 @@ export default function Generator() {
                 </div>
               </div>
 
-              {/* Field 6: Secret Quest Note */}
-              <label style={{ display: 'grid', gap: 8 }}>
+              {/* Field 6: Companion Avatar */}
+              <div style={{ display: 'grid', gap: 10 }}>
                 <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
-                  6. PERSONAL NOTE INSIDE LETTER (OPTIONAL)
+                  6. COMPANION AVATAR IN LETTER
                 </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playConsoleButton(true)
+                      setSelectedAvatar('cat')
+                    }}
+                    style={{
+                      textAlign: 'left',
+                      padding: '12px 14px',
+                      border: `3px solid ${t.border}`,
+                      background: selectedAvatar === 'cat' ? t.accent : '#FFFFFF',
+                      color: selectedAvatar === 'cat' ? '#FFFFFF' : t.ink,
+                      boxShadow: selectedAvatar === 'cat' ? `2px 2px 0px ${t.border}` : `4px 4px 0px ${t.border}`,
+                      transform: selectedAvatar === 'cat' ? 'translate(2px, 2px)' : 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      borderRadius: 2,
+                    }}
+                    className="font-silkscreen"
+                  >
+                    <span style={{ fontSize: '18px' }}>🐱</span>
+                    <div>
+                      <div style={{ fontSize: '11px', fontWeight: 700 }}>Chubby Kitty</div>
+                      <div style={{ fontSize: '9px', opacity: 0.85 }}>Cute paws holding letter</div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playConsoleButton(true)
+                      setSelectedAvatar('chibi')
+                    }}
+                    style={{
+                      textAlign: 'left',
+                      padding: '12px 14px',
+                      border: `3px solid ${t.border}`,
+                      background: selectedAvatar === 'chibi' ? t.accent : '#FFFFFF',
+                      color: selectedAvatar === 'chibi' ? '#FFFFFF' : t.ink,
+                      boxShadow: selectedAvatar === 'chibi' ? `2px 2px 0px ${t.border}` : `4px 4px 0px ${t.border}`,
+                      transform: selectedAvatar === 'chibi' ? 'translate(2px, 2px)' : 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      borderRadius: 2,
+                    }}
+                    className="font-silkscreen"
+                  >
+                    <span style={{ fontSize: '18px' }}>🧑‍🎨</span>
+                    <div>
+                      <div style={{ fontSize: '11px', fontWeight: 700 }}>Chibi Sweetheart</div>
+                      <div style={{ fontSize: '9px', opacity: 0.85 }}>Cozy hoodie & mittens</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Field 7: Secret Note with Randomizer & Catalog */}
+              <div style={{ display: 'grid', gap: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+                  <span className="font-pixel" style={{ fontSize: '10px', color: t.ink }}>
+                    7. PERSONAL NOTE INSIDE LETTER
+                  </span>
+
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playHeartChirp(true)
+                        setCustomNote(getRandomNote())
+                      }}
+                      className="font-silkscreen"
+                      style={{
+                        background: t.accent,
+                        color: '#FFFFFF',
+                        border: `1.5px solid ${t.border}`,
+                        padding: '4px 10px',
+                        borderRadius: 2,
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      🎲 RANDOM NOTE
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playConsoleButton(true)
+                        setShowDirectory(!showDirectory)
+                      }}
+                      className="font-silkscreen"
+                      style={{
+                        background: showDirectory ? t.border : '#FFFFFF',
+                        color: showDirectory ? '#FFFFFF' : t.ink,
+                        border: `1.5px solid ${t.border}`,
+                        padding: '4px 10px',
+                        borderRadius: 2,
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      📖 {showDirectory ? 'HIDE CATALOG' : 'BROWSE CATALOG'}
+                    </button>
+                  </div>
+                </div>
+
                 <input
                   value={customNote}
                   onChange={(e) => setCustomNote(e.target.value)}
-                  placeholder="e.g. Your smile is completely unfair."
+                  placeholder="e.g. Your smile is completely unfair to my heart."
                   maxLength={120}
                   className="font-silkscreen"
                   style={{
@@ -347,7 +464,116 @@ export default function Generator() {
                     borderRadius: 2,
                   }}
                 />
-              </label>
+
+                {/* Interactive Message Directory Catalog */}
+                <AnimatePresence>
+                  {showDirectory && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <div
+                        style={{
+                          background: '#FFFFFF',
+                          border: `2px dashed ${t.border}`,
+                          padding: '16px',
+                          borderRadius: 4,
+                          display: 'grid',
+                          gap: 14,
+                        }}
+                      >
+                        <div className="font-pixel" style={{ fontSize: '9px', color: t.accent }}>
+                          ★ CLICK ANY NOTE TO USE IT INSTANTLY:
+                        </div>
+
+                        {NOTE_CATALOG.map((cat) => (
+                          <div key={cat.category} style={{ display: 'grid', gap: 6 }}>
+                            <div className="font-silkscreen" style={{ fontSize: '11px', fontWeight: 700, color: t.muted }}>
+                              [{cat.category}]
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              {cat.notes.map((note) => (
+                                <button
+                                  key={note}
+                                  type="button"
+                                  onClick={() => {
+                                    playSparkle(true)
+                                    setCustomNote(note)
+                                  }}
+                                  className="font-silkscreen"
+                                  style={{
+                                    textAlign: 'left',
+                                    padding: '8px 10px',
+                                    border: `1px solid ${t.border}`,
+                                    background: customNote === note ? t.highlight : '#FFFDF8',
+                                    color: t.ink,
+                                    fontSize: '12px',
+                                    cursor: 'pointer',
+                                    borderRadius: 2,
+                                    transition: 'background 0.1s',
+                                  }}
+                                >
+                                  "{note}"
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Live Cartridge Content Preview */}
+              <div
+                style={{
+                  background: '#FFFFFF',
+                  border: `3px solid ${t.border}`,
+                  padding: '16px',
+                  borderRadius: 4,
+                  boxShadow: `4px 4px 0px ${t.shadow}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="font-pixel" style={{ fontSize: '9px', color: t.accent }}>
+                    ★ LIVE CARTRIDGE PREVIEW
+                  </span>
+                  <span className="font-silkscreen" style={{ fontSize: '10px', color: t.muted }}>
+                    SHELL: {t.name.toUpperCase()}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    background: t.highlight || '#FFF0F5',
+                    border: `2px solid ${t.border}`,
+                    padding: '12px',
+                    borderRadius: 2,
+                    textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontSize: '20px', marginBottom: 4 }}>
+                    {selectedAvatar === 'cat' ? '🐱' : '🧑‍🎨'}
+                  </div>
+                  <div className="font-pixel" style={{ fontSize: '12px', color: t.accent, marginBottom: 4 }}>
+                    {modes[selectedMode]?.badge || 'I REALLY LIKE YOU.'}
+                  </div>
+                  <div className="font-silkscreen" style={{ fontSize: '11px', color: t.ink, marginBottom: 4 }}>
+                    To: <span style={{ fontWeight: 700 }}>{theirName || 'Maya'}</span> · From: <span style={{ fontWeight: 700 }}>{yourName || 'Someone'}</span>
+                  </div>
+                  {customNote && (
+                    <div className="font-silkscreen" style={{ fontSize: '11px', fontStyle: 'italic', color: t.muted, marginTop: 4 }}>
+                      "{customNote}"
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Live Preview Box */}
               <div
