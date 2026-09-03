@@ -1,163 +1,154 @@
-# 🎮 I-Like-U · Pocket Love System
+# 👾 I-Like-U · The Pocket Love System
 
 <p align="center">
-  <img src="https://img.shields.io/badge/License-MIT-pink?style=for-the-badge" alt="License: MIT" />
-  <img src="https://img.shields.io/badge/Tech-React_%7C_Vite_%7C_Web_Audio-purple?style=for-the-badge" alt="Tech Stack" />
-  <img src="https://img.shields.io/badge/Aesthetic-8--Bit_Handheld_Retro-darkgreen?style=for-the-badge" alt="Aesthetic" />
-  <img src="https://img.shields.io/badge/Version-v1.0.0-rose?style=for-the-badge" alt="Version 1.0.0" />
-  <a href="https://i-like-u-kappa.vercel.app"><img src="https://img.shields.io/badge/🌐_Live_Demo-i--like--u--kappa.vercel.app-blue?style=for-the-badge" alt="Live Demo" /></a>
+  <img src="https://img.shields.io/badge/License-MIT-pink?style=flat-square" alt="MIT License" />
+  <img src="https://img.shields.io/badge/Vibe-100%25_Handcrafted-purple?style=flat-square" alt="Handcrafted" />
+  <img src="https://img.shields.io/badge/Audio-0MB_Pure_Synth-darkgreen?style=flat-square" alt="Pure Web Audio" />
+  <img src="https://img.shields.io/badge/Chance_of_Blushing-99.8%25-rose?style=flat-square" alt="Blush Probability" />
 </p>
 
 <p align="center">
-  <b>A heartwarming, open-source 8-bit retro handheld love note generator.</b><br/>
-  Craft a bespoke, interactive Game Boy cartridge experience for someone special with custom modes, sincere dialogue, tactile controls, and relaxing procedural lofi chiptune music.
+  <a href="https://i-like-u-kappa.vercel.app"><b>🎮 Open the Game Boy</b></a> · 
+  <a href="https://i-like-u-kappa.vercel.app/create"><b>💌 Make a Custom Cartridge</b></a> · 
+  <a href="https://github.com/Zierax/I-Like-U/releases/tag/v1.0.0"><b>📦 v1.0.0 Release</b></a>
 </p>
 
 <p align="center">
-  <a href="https://i-like-u-kappa.vercel.app"><b>▶ Try the Live Demo</b></a> · <a href="https://github.com/Zierax/I-Like-U/releases/tag/v1.0.0"><b>📦 v1.0.0 Release</b></a>
+  <i>"I can debug 3,000 lines of messy async code at 3 AM without sweating,<br/>
+  but saying 'I like you' in person? Complete kernel panic."</i>
 </p>
 
 ---
 
-## ✨ Features
+## 🧐 Why does this exist?
 
-- 🕹️ **Tactile Handheld Console**: Authentic Game Boy Pocket chassis with responsive D-pad, springy (A)/(B) physical buttons, power LED, scanlines, and audio toggles.
-- 🎵 **Procedural 8-Bit Lofi Synth**: Zero bulky audio files. Generates smooth, soothing triangle/sine wave lullaby chord progressions (`Cmaj7 → Am9 → Fmaj7 → Gsus4`) and musical SFX via Web Audio API.
-- 🐾 **4 Pixel Companions**:
-  - 🐱 **Chubby Kitty** (Holding letter with twitching ears & sparkling eyes)
-  - 🐶 **Shiba Puppy** (Floppy ears & wagging curled tail)
-  - 🧸 **Cozy Bear** (Fluffy teddy bear with heart envelope)
-  - 🧑‍💻 **Shy Developer** (Headphones, ahoge hair & oversized hoodie)
-- 💬 **Human Imperfection Touches**:
-  - **Hesitation & Backspace**: Types an awkward tentative message, pauses, backspaces character-by-character, and types the brave honest truth.
-  - **Crossed-out Word**: Renders ~~nice~~ **extraordinary** with a subtle pink strike.
-  - **Wiggling Sticker**: Crooked masking-tape sticker that wiggles when tapped.
-  - **(B) Button Blush**: Pressing (B) triggers an easter egg blush reaction.
-  - **Cartridge Cleaning**: Nostalgic "Blow on Cartridge" prompt with puff sound.
-- 🎨 **5 Retro Shell Palettes**: Pocket Sakura, Atomic Purple, 1989 Classic, Retro Mint, and 8-Bit Midnight.
-- 💌 **Tone & Dialogue Customization**:
-  - Choose between *The Shy Developer*, *The Overthinker*, *The Daydreamer*, or *Direct & Sincere*.
-  - Or write your own completely custom confession override!
-- 📱 **Fast Share & QR**: Instant link copying, Web Share API support, and built-in SVG QR code generator for scanning with phones.
+1. **Saying how you feel out loud is terrifying.**
+2. A generic WhatsApp text feels lame.
+3. An Instagram reel feels impersonal.
+4. **Over-engineering an entire virtual 1989 handheld console** with procedural Web Audio synthesis, real-time pixel scanlines, and a tactile D-pad to tell someone you like them? *Objectively peak romance.*
+
+Whether it's for your crush, your partner, or your best friend who deserves to know they're an absolute legend, **I-Like-U** wraps your message inside an authentic retro cartridge experience.
 
 ---
 
-## 🚀 Quick Start (Running Locally)
+## 🕹️ Human Imperfections (The Fun Stuff)
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or pnpm
+Most digital cards feel like sterile corporate templates. We added the messy, nervous human details:
 
-### Installation
+- ⌨️ **The Hesitation Engine**: It starts typing an awkward *"Hey are you free this weekend or maybe we could—"*, freezes, furiously hits backspace, and finally spits out the honest truth.
+- 🩹 **Scotch Tape & Crooked Stickers**: Every good cartridge was dropped on the floor at least three times. Tap the tape on the top right to watch it wiggle.
+- 💨 **Cartridge Blowing**: If your game is lagging (or you just miss 1998), tap to blow dust out of the cartridge with authentic puff SFX.
+- 🍅 **The (B) Button Blush**: Spam the (B) button to make the console blush.
+- 🎶 **Zero MP3 Audio Engine**: No bloated 20MB sound files. Every single chord progression (`Cmaj7 → Am9 → Fmaj7 → Gsus4`) and clicky button sound is procedurally generated in real-time by your browser's audio chips.
+
+---
+
+## 🐾 Choose Your Companion
+
+| Companion | Personality |
+|---|---|
+| 🐱 **Chubby Kitty** | Holds your love note with tiny twitching paws. 10/10 specular anime eyes. |
+| 🐶 **Shiba Puppy** | Fluffy golden fur, floppy ears, and an uncontrollable wagging tail. |
+| 🧸 **Cozy Bear** | Chocolate brown teddy bear holding an envelope with a cute red seal. |
+| 🧑‍💻 **The Shy Dev** | Retro headphones, oversized hoodie, blushed cheeks, and zero social battery. |
+
+---
+
+## 🎭 4 Confession Flavors (16 Mode Variations)
+
+You don't have to be a coder to use this! We built **4 distinct confession personalities**, each with unique dialogues for whatever vibe you're going for:
+
+- 👾 **The Shy Developer (Signature Default)**: *"I can write thousands of lines of code, but saying how I feel to you makes me freeze up."*
+- 💭 **The Overthinker**: *"I analyzed this decision from 47 different angles, drafted this 40 times, panicked, and sent it anyway."*
+- ✨ **The Daydreamer**: *"There was never going to be a 'perfect' time. Every time you smile my day gets 100x better."*
+- 💌 **Direct & Sincere**: *"No games, no drama, no beating around the bush. You are extraordinary."*
+
+*Or override it completely with your own sentence right inside the generator!*
+
+---
+
+## 🚀 Quick Start for Hackers
+
+Want to run it locally, tweak the chiptunes, or host your own version?
 
 ```bash
-# 1. Clone the repository
+# 1. Grab the code
 git clone https://github.com/Zierax/I-Like-U.git
-
-# 2. Enter directory
 cd I-Like-U
 
-# 3. Install dependencies
+# 2. Install dependencies (it's lightweight, we promise)
 npm install
 
-# 4. Start development server
+# 3. Fire up the dev server
 npm run dev
 ```
 
-Visit `http://localhost:5173` in your browser.
+Open `http://localhost:5173` and start clicking buttons.
 
 ---
 
-## 🛠️ Query Parameters API
+## 🛠️ URL Hacker Cheat Sheet (Query Params)
 
-You can generate custom links directly via URL query parameters:
+Want to skip the UI and craft your link directly? You sneaky nerd:
 
-```
-https://<your-domain>/for/:name?from=...&theme=...&mode=...&avatar=...&intro=...&note=...
-```
-
-| Parameter | Type | Default | Options | Description |
-|---|---|---|---|---|
-| `:name` | Path param | `Someone` | Any string | Recipient's name |
-| `from` | Query param | `''` | Any string | Creator / sender name |
-| `theme` | Query param | `blush` | `blush`, `atomic`, `classic`, `mint`, `starlight` | Console shell color |
-| `mode` | Query param | `romantic` | `romantic`, `crush`, `playful`, `appreciation` | Tone and letter badge |
-| `avatar` | Query param | `kitty` | `kitty`, `puppy`, `bear`, `dev` | Screen companion sprite |
-| `intro` | Query param | `dev` | `dev`, `overthinker`, `daydreamer`, `direct` | Scene 1 confession style |
-| `intro_text`| Query param | `''` | Any string (max 240 chars) | Custom confession text override |
-| `note` | Query param | `''` | Any string (max 120 chars) | Secret personal note in letter |
-
-### Example Link
-```
-https://localhost:5173/for/Maya?from=Leo&theme=blush&mode=romantic&avatar=kitty&intro=dev&note=You%20are%20my%20favorite%20notification.
+```text
+https://i-like-u-kappa.vercel.app/for/:name?from=...&theme=...&mode=...&avatar=...&intro=...&note=...
 ```
 
----
+| Parameter | Options | Default | What it actually does |
+|---|---|---|---|
+| `:name` | `Maya`, `Sarah`, `Alex`, etc. | `Someone` | The lucky person receiving this cartridge. |
+| `from` | Any name | `''` | Who gets credit (or blame) for this confession. |
+| `theme` | `blush`, `atomic`, `classic`, `mint`, `starlight` | `blush` | Pocket Sakura, Atomic Purple, Game Boy 1989, or Mint. |
+| `mode` | `romantic`, `crush`, `playful`, `appreciation` | `romantic` | Confession tone (Romantic, Secret Crush, Homie/Friend, or Wholesome). |
+| `avatar` | `kitty`, `puppy`, `bear`, `dev` | `kitty` | The pixel creature delivering the letter. |
+| `intro` | `dev`, `overthinker`, `daydreamer`, `direct` | `dev` | The Scene 1 hesitation personality. |
+| `intro_text`| Any custom text (max 240 chars) | `''` | Overwrite the honest truth with your exact words. |
+| `note` | Any text (max 120 chars) | `''` | A secret one-liner hidden inside the envelope. |
 
-## 📂 Project Structure
-
+**Example URL:**
 ```
-I-Like-U/
-├── src/
-│   ├── components/
-│   │   ├── Credit.jsx         # Open source project footer attribution
-│   │   ├── PixelConsole.jsx   # Tactile Game Boy handheld console frame & controls
-│   │   ├── PixelHeart.jsx     # Animated 8-bit glowing heart
-│   │   └── PixelSprites.jsx   # SVG pixel art sprites (Cat, Dog, Bear, Dev, Envelope)
-│   ├── lib/
-│   │   ├── messages.js        # Dynamic mode stories, dialogue styles & note catalog
-│   │   ├── sound.js           # Procedural Web Audio API synth (BGM + SFX)
-│   │   └── theme.js           # Themes, stickers, helpers & URL builder
-│   ├── pages/
-│   │   ├── Experience.jsx     # 5-stage interactive Game Boy experience
-│   │   └── Generator.jsx      # Clean link creator, live preview & QR code
-│   ├── App.jsx                # React router configuration
-│   ├── index.css              # Pixel fonts, scanlines, and retro animations
-│   └── main.jsx               # App entry point
-├── package.json
-└── vite.config.js
+https://i-like-u-kappa.vercel.app/for/Camile?from=Leo&theme=atomic&mode=crush&avatar=kitty&note=You%20are%20my%20favorite%20human.
 ```
 
 ---
 
-## 🚢 Deployment & Live URL
+## ❓ FAQ (Frequently Asked Doubts)
 
-The official project is deployed live on Vercel:
+**Q: Will this guarantee my crush likes me back?**  
+A: We are programmers, not wizards. But if someone sends you a handcrafted 8-bit retro handheld console with procedural Web Audio chord progressions and you *don't* smile, you might actually be a robot.
 
-- 🌐 **Live Website**: [https://i-like-u-kappa.vercel.app](https://i-like-u-kappa.vercel.app)
-- 💌 **Cartridge Generator**: [https://i-like-u-kappa.vercel.app/create](https://i-like-u-kappa.vercel.app/create)
+**Q: Can I send this to my homies / best friend?**  
+A: YES! Set mode to `playful` (Playful & Teasing) or `appreciation` (Pure Appreciation). Tell your best friend they're an absolute legend without making it weird (or make it weird, we don't judge).
 
-You can also deploy your own fork in seconds:
+**Q: Do I need to know how to code?**  
+A: Not at all! Just go to [/create](https://i-like-u-kappa.vercel.app/create), type two names, pick your favorite console color, and copy the link.
 
-### Deploy with Vercel
+**Q: Why is there masking tape on the top right?**  
+A: Because authentic 90s tech was held together by pure nostalgia and scotch tape.
+
+---
+
+## 🚢 Deploying Your Own
+
+One-click deploy to Vercel:
+
 ```bash
 npx vercel
 ```
 
-### Deploy with Netlify
-```bash
-npx netlify deploy --prod
-```
-
-### Build for Production
-```bash
-npm run build
-```
-The output will be created in the `dist/` directory ready for static hosting.
+*(We already included `vercel.json` so your deep routes like `/for/Someone` never return 404s).*
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome!
-Please check out [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
+Got an idea for a pixel bunny? A nostalgic clear-cyan shell? A better lofi melody?  
+Read [CONTRIBUTING.md](./CONTRIBUTING.md) and send a pull request!
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License**. See [LICENSE](./LICENSE) for more information.
-
-<p align="center">
-  Crafted with ♥ by <a href="https://github.com/Zierax"><b>Zierax</b></a>
-</p>
+**MIT License** © 2026 [Zierax](https://github.com/Zierax).  
+Free to fork, tweak, customize, and use to confess to whoever makes your heart drop frames.
