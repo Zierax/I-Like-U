@@ -5,11 +5,16 @@
   <img src="https://img.shields.io/badge/Tech-React_%7C_Vite_%7C_Web_Audio-purple?style=for-the-badge" alt="Tech Stack" />
   <img src="https://img.shields.io/badge/Aesthetic-8--Bit_Handheld_Retro-darkgreen?style=for-the-badge" alt="Aesthetic" />
   <img src="https://img.shields.io/badge/Version-v1.0.0-rose?style=for-the-badge" alt="Version 1.0.0" />
+  <a href="https://i-like-u-kappa.vercel.app"><img src="https://img.shields.io/badge/🌐_Live_Demo-i--like--u--kappa.vercel.app-blue?style=for-the-badge" alt="Live Demo" /></a>
 </p>
 
 <p align="center">
   <b>A heartwarming, open-source 8-bit retro handheld love note generator.</b><br/>
   Craft a bespoke, interactive Game Boy cartridge experience for someone special with custom modes, sincere dialogue, tactile controls, and relaxing procedural lofi chiptune music.
+</p>
+
+<p align="center">
+  <a href="https://i-like-u-kappa.vercel.app"><b>▶ Try the Live Demo</b></a> · <a href="https://github.com/Zierax/I-Like-U/releases/tag/v1.0.0"><b>📦 v1.0.0 Release</b></a>
 </p>
 
 ---
@@ -115,9 +120,14 @@ I-Like-U/
 
 ---
 
-## 🚢 Deployment
+## 🚢 Deployment & Live URL
 
-You can deploy this project in seconds with zero configuration:
+The official project is deployed live on Vercel:
+
+- 🌐 **Live Website**: [https://i-like-u-kappa.vercel.app](https://i-like-u-kappa.vercel.app)
+- 💌 **Cartridge Generator**: [https://i-like-u-kappa.vercel.app/create](https://i-like-u-kappa.vercel.app/create)
+
+You can also deploy your own fork in seconds:
 
 ### Deploy with Vercel
 ```bash
