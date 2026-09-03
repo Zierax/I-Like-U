@@ -186,39 +186,94 @@ export function getModeData(modeKey) {
   return modes[modeKey] || modes.romantic
 }
 
-// 4 Dialogue Story Styles (The Shy Developer is the signature Default!)
+// 4 Dialogue Story Styles × 4 Modes = 16 Unique Confessions
+// Each intro style adapts its voice to the active mode context.
+// The Shy Developer is the signature default.
+
 export const dialogueIntros = {
   dev: {
     id: 'dev',
     name: 'The Shy Developer (Default)',
     badge: '👾 CODE & HESITATION',
-    tentativeText: 'I was just wondering if maybe we could hang out some—',
-    honestTruth: (display, from) =>
-      `Actually...\nI don't just want to 'hang out'.\nI can write thousands of lines of code, but saying how I feel in person? I completely freeze up.\nSo I spent hours building this little 8-bit note for you instead.`,
+    tentativeText: {
+      romantic: 'I was just wondering if maybe we could hang out some—',
+      crush: 'I wanted to send you something small, like a—',
+      playful: 'I was going to build you a meme generator, but—',
+      appreciation: 'I usually keep things to myself, but—',
+    },
+    honestTruth: {
+      romantic: (display, from) =>
+        `Actually...\nI don't just want to 'hang out'.\nI can write thousands of lines of code, but saying how I feel to you? I completely freeze up.\nSo I spent hours building this little 8-bit note for you instead.`,
+      crush: (display, from) =>
+        `Actually...\nI can write thousands of lines of code without thinking twice.\nBut every time I see you, ${display}, my brain just... stops working.\nI have had a crush on you for a while now. And I couldn't keep it to myself anymore.`,
+      playful: (display, from) =>
+        `Actually...\nA meme isn't enough for someone like you, ${display}.\nI can debug the messiest code at 3 AM, but trying to explain why you are my favorite person? Impossible.\nSo I built you this instead. You are welcome.`,
+      appreciation: (display, from) =>
+        `Actually...\nI can write thousands of lines of code, but writing how much you mean to me? That is genuinely the hardest thing.\n${display}, you make my world so much better just by being in it.\nThank you for everything.`,
+    },
   },
   overthinker: {
     id: 'overthinker',
     name: 'The Overthinker',
     badge: '💭 WROTE & DELETED 40 TIMES',
-    tentativeText: 'I wrote and deleted this message like 40 times...',
-    honestTruth: (display, from) =>
-      `Actually...\nI overthink literally everything in my life.\nEvery word, every step, every scenario.\nExcept how much I like you, ${display}. That was the only thing that felt completely simple.`,
+    tentativeText: {
+      romantic: 'I wrote and deleted this message like 40 times...',
+      crush: 'I typed this out, panicked, closed the app, opened it again—',
+      playful: 'I overthought whether to send this for three whole days—',
+      appreciation: 'I kept wondering if this was too much, but—',
+    },
+    honestTruth: {
+      romantic: (display, from) =>
+        `Actually...\nI overthink literally everything in my life.\nEvery word, every step, every scenario.\nExcept how much I like you, ${display}. That was the only thing that felt completely simple.`,
+      crush: (display, from) =>
+        `Actually...\nI have replayed this moment in my head a thousand times.\nWhat to say, how to say it, whether you would think it is weird.\nBut ${display}, I have a crush on you. And no amount of overthinking changes that.`,
+      playful: (display, from) =>
+        `Actually...\nI analyzed this decision from 47 different angles.\nPros, cons, risk assessment, the whole thing.\nConclusion: ${display}, you are genuinely my favorite person and I needed you to know.`,
+      appreciation: (display, from) =>
+        `Actually...\nI kept going back and forth on whether to send this.\nBut ${display}, you deserve to hear it clearly:\nYou are one of the most important people in my life, and I do not say that lightly.`,
+    },
   },
   daydreamer: {
     id: 'daydreamer',
     name: 'The Daydreamer',
     badge: '✨ WAITING FOR COURAGE',
-    tentativeText: 'Hey... I have been trying to find the right time to say this—',
-    honestTruth: (display, from) =>
-      `Actually...\nThere is never a 'perfect' time.\nEvery time you smile or talk to me, my entire day gets 100x better.\nI just couldn't keep this secret to myself anymore, ${display}.`,
+    tentativeText: {
+      romantic: 'Hey... I have been trying to find the right time to say this—',
+      crush: 'I have been daydreaming about telling you something—',
+      playful: 'I had this whole imaginary conversation with you in my head—',
+      appreciation: 'I have been meaning to tell you something for a while—',
+    },
+    honestTruth: {
+      romantic: (display, from) =>
+        `Actually...\nThere is never a 'perfect' time.\nEvery time you smile or talk to me, my entire day gets 100x better.\nI just could not keep this to myself anymore, ${display}.`,
+      crush: (display, from) =>
+        `Actually...\nI have spent more time thinking about you than I would ever admit out loud.\n${display}, I have a crush on you.\nAnd finally saying it feels like the biggest relief in the world.`,
+      playful: (display, from) =>
+        `Actually...\nIn my head, this conversation went way smoother.\nBut the truth is simple, ${display}: you are my favorite human.\nNo one else even comes close. Thought you should know.`,
+      appreciation: (display, from) =>
+        `Actually...\nI have been carrying these words around for a while.\n${display}, you are one of the warmest, most genuine souls I know.\nThe world is honestly lucky to have you. And so am I.`,
+    },
   },
   direct: {
     id: 'direct',
     name: 'Direct & Sincere',
     badge: '💌 NO GAMES OR DRAMA',
-    tentativeText: 'I was thinking of keeping this to myself, but—',
-    honestTruth: (display, from) =>
-      `Actually...\nNo games, no hesitations, no drama.\nYou are simply one of the most incredible people I have ever met, ${display}.\nAnd I just really, really wanted you to know.`,
+    tentativeText: {
+      romantic: 'I was thinking of keeping this to myself, but—',
+      crush: 'I could pretend I do not feel this way, but—',
+      playful: 'No big intro needed, just—',
+      appreciation: 'This is going to be straightforward—',
+    },
+    honestTruth: {
+      romantic: (display, from) =>
+        `Actually...\nNo games, no hesitations, no drama.\n${display}, you are simply one of the most incredible people I have ever met.\nAnd I just really, really wanted you to know that I like you.`,
+      crush: (display, from) =>
+        `Actually...\nI am not going to dance around it.\n${display}, I have a crush on you. A real one.\nAnd pretending otherwise was starting to feel dishonest.`,
+      playful: (display, from) =>
+        `Actually...\nStraight to the point:\n${display}, you are an absolute legend and my number one favorite person.\nThat is it. That is the whole message. Deal with it.`,
+      appreciation: (display, from) =>
+        `Actually...\nNo fancy words needed.\n${display}, you are genuinely wonderful. Your presence makes everything better.\nI just wanted to make sure you actually know that.`,
+    },
   },
 }
 

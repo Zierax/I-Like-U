@@ -398,10 +398,19 @@ function ScreenBoot({ display, from, theme, avatar = 'cat', soundEnabled, onPres
    (Using custom dialogue story & backspace hesitation effect)
 ========================================================= */
 function ScreenHonestTalk({ display, from, theme, mode, intro, customIntro, soundEnabled, onNext }) {
-  const tentativeText = intro?.tentativeText || mode.tentativeText
-  const honestTruth = customIntro || (intro?.honestTruth
-    ? intro.honestTruth(display, from)
+  // Resolve mode-aware intro text: intro.tentativeText/honestTruth are now { romantic: '...', crush: '...', ... }
+  const modeId = mode?.id || 'romantic'
+  const resolvedTentative = intro?.tentativeText
+    ? (typeof intro.tentativeText === 'string' ? intro.tentativeText : intro.tentativeText[modeId] || intro.tentativeText.romantic)
+    : mode.tentativeText
+  const resolvedHonest = customIntro || (intro?.honestTruth
+    ? (typeof intro.honestTruth === 'function'
+        ? intro.honestTruth(display, from)
+        : (intro.honestTruth[modeId] || intro.honestTruth.romantic)(display, from))
     : mode.honestTruth(display, from))
+
+  const tentativeText = resolvedTentative
+  const honestTruth = resolvedHonest
 
   const [text, setText] = useState('')
   const [phase, setPhase] = useState('typing_tentative')
