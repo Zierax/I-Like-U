@@ -73,6 +73,7 @@ export default function PixelConsole({
 
   return (
     <div
+      className="gameboy-console-wrap"
       style={{
         width: '100%',
         maxWidth: 440,
@@ -114,6 +115,7 @@ export default function PixelConsole({
 
       {/* Handheld Console Outer Body */}
       <div
+        className="gameboy-console-body"
         style={{
           background: theme.card || '#FFFFFF',
           border: `4px solid ${theme.border}`,
@@ -167,12 +169,13 @@ export default function PixelConsole({
 
         {/* Screen Bezel Frame */}
         <div
+          className="gameboy-screen-bezel"
           style={{
             background: theme.border,
             borderRadius: 16,
             padding: '16px 14px 18px',
             boxShadow: 'inset 0 4px 8px rgba(0,0,0,0.3)',
-            marginBottom: 24,
+            marginBottom: 20,
             position: 'relative',
           }}
         >
@@ -218,12 +221,13 @@ export default function PixelConsole({
 
           {/* Actual LCD Pixel Screen */}
           <div
+            className="gameboy-screen-lcd"
             onClick={handleScreenClick}
             style={{
               background: theme.bg,
               border: '2px solid rgba(0,0,0,0.4)',
               borderRadius: 8,
-              minHeight: 330,
+              minHeight: 320,
               display: 'flex',
               flexDirection: 'column',
               position: 'relative',
@@ -273,6 +277,7 @@ export default function PixelConsole({
 
         {/* Handheld Controls Deck */}
         <div
+          className="gameboy-controls-deck"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -282,6 +287,7 @@ export default function PixelConsole({
         >
           {/* 4-Way D-Pad */}
           <div
+            className="gameboy-dpad"
             style={{
               position: 'relative',
               width: 96,
@@ -396,6 +402,7 @@ export default function PixelConsole({
 
           {/* (A) and (B) Action Buttons */}
           <div
+            className="gameboy-action-buttons"
             style={{
               display: 'flex',
               gap: 16,
@@ -407,6 +414,7 @@ export default function PixelConsole({
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
               <button
                 type="button"
+                className="gameboy-action-btn"
                 onClick={() => handleButton('B', onPressB)}
                 aria-label="Action B"
                 style={{
@@ -424,12 +432,21 @@ export default function PixelConsole({
                   display: 'grid',
                   placeItems: 'center',
                   transition: 'transform 0.08s, box-shadow 0.08s',
+                  touchAction: 'manipulation',
                 }}
                 onMouseDown={(e) => {
                   e.currentTarget.style.transform = 'translate(2px, 2px)'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
                 onMouseUp={(e) => {
+                  e.currentTarget.style.transform = 'none'
+                  e.currentTarget.style.boxShadow = `2px 3px 0px ${theme.border}`
+                }}
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = 'translate(2px, 2px)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+                onTouchEnd={(e) => {
                   e.currentTarget.style.transform = 'none'
                   e.currentTarget.style.boxShadow = `2px 3px 0px ${theme.border}`
                 }}
@@ -445,6 +462,7 @@ export default function PixelConsole({
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
               <button
                 type="button"
+                className="gameboy-action-btn"
                 onClick={() => handleButton('A', onPressA)}
                 aria-label="Action A"
                 style={{
@@ -462,12 +480,21 @@ export default function PixelConsole({
                   display: 'grid',
                   placeItems: 'center',
                   transition: 'transform 0.08s, box-shadow 0.08s',
+                  touchAction: 'manipulation',
                 }}
                 onMouseDown={(e) => {
                   e.currentTarget.style.transform = 'translate(2px, 2px)'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
                 onMouseUp={(e) => {
+                  e.currentTarget.style.transform = 'none'
+                  e.currentTarget.style.boxShadow = `2px 3px 0px ${theme.border}`
+                }}
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = 'translate(2px, 2px)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+                onTouchEnd={(e) => {
                   e.currentTarget.style.transform = 'none'
                   e.currentTarget.style.boxShadow = `2px 3px 0px ${theme.border}`
                 }}

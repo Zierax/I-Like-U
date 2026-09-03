@@ -147,8 +147,17 @@ export function playBackspaceSound(enabled = true) {
   } catch {}
 }
 
+export function triggerHaptic(pattern = 15) {
+  if (typeof window !== 'undefined' && typeof navigator !== 'undefined' && navigator.vibrate) {
+    try {
+      navigator.vibrate(pattern)
+    } catch {}
+  }
+}
+
 // Tactile Game Boy button click
 export function playConsoleButton(enabled = true) {
+  triggerHaptic(14)
   if (!enabled) return
   try {
     const ctx = getAudioContext()
@@ -174,6 +183,7 @@ export function playConsoleButton(enabled = true) {
 
 // Warm heart chirp / level up sound
 export function playHeartChirp(enabled = true) {
+  triggerHaptic([10, 30, 15])
   if (!enabled) return
   try {
     const ctx = getAudioContext()
@@ -205,6 +215,7 @@ export function playHeartChirp(enabled = true) {
 
 // Character jump chirp
 export function playJump(enabled = true) {
+  triggerHaptic(12)
   if (!enabled) return
   try {
     const ctx = getAudioContext()

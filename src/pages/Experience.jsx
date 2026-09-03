@@ -66,6 +66,7 @@ export default function Experience() {
 
   return (
     <div
+      className="gameboy-page-wrap"
       style={{
         minHeight: '100dvh',
         background: theme.bg,
@@ -74,20 +75,22 @@ export default function Experience() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '24px 16px',
+        padding: '20px 16px',
         userSelect: 'none',
+        overflowX: 'hidden',
       }}
     >
       {/* Audio Controls Bar */}
       <div
+        className="gameboy-top-bar"
         style={{
           width: '100%',
           maxWidth: 440,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: 16,
-          padding: '0 8px',
+          marginBottom: 12,
+          padding: '0 6px',
         }}
       >
         <Link
@@ -233,7 +236,7 @@ export default function Experience() {
       </PixelConsole>
 
       {/* Subtle Developer Credit */}
-      <div style={{ marginTop: 22 }}>
+      <div className="gameboy-footer-credit" style={{ marginTop: 16 }}>
         <Credit theme={theme} />
       </div>
     </div>
