@@ -97,6 +97,8 @@ export default function Generator() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12,
           borderBottom: `3px dashed ${t.border}`,
           marginBottom: 24,
         }}
@@ -107,7 +109,7 @@ export default function Generator() {
             CARTRIDGE BUILDER
           </span>
         </div>
-        <Credit theme={t} />
+        <Credit theme={t} align="flex-end" />
       </header>
 
       {/* Main Form */}

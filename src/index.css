@@ -134,6 +134,40 @@ body {
   background: var(--theme-highlight, #FFE3EC);
 }
 
+/* Retro Credit Social Buttons */
+.credit-social-btn {
+  font-family: 'Silkscreen', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 4px 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-decoration: none;
+  border-radius: 3px;
+  border: 1.5px solid var(--credit-border, #3A1F2D);
+  background: var(--credit-bg, #FFFFFF);
+  color: var(--credit-ink, #3A1F2D);
+  box-shadow: 2px 2px 0px var(--credit-border, #3A1F2D);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, color 0.15s ease, background-color 0.15s ease;
+  user-select: none;
+  line-height: 1.2;
+}
+
+.credit-social-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--credit-border, #3A1F2D);
+  color: var(--credit-accent, #FF4370);
+  background: var(--credit-highlight, #FFE3EC);
+}
+
+.credit-social-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--credit-border, #3A1F2D);
+}
+
 /* Blinking RPG Cursor */
 @keyframes blinkCursor {
   0%, 49% {
@@ -264,5 +298,11 @@ body {
 
   .gameboy-footer-credit {
     margin-top: 10px !important;
+  }
+
+  .credit-social-btn {
+    font-size: 9px !important;
+    padding: 3px 7px !important;
+    gap: 4px !important;
   }
 }
