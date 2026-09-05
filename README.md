@@ -8,6 +8,10 @@
 </p>
 
 <p align="center">
+  <a href="https://fazier.com/launches/i-like-u-kappa.vercel.app" target="_blank"><img src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=featured&theme=neutral" width="250" alt="Fazier badge" /></a>
+</p>
+
+<p align="center">
   <a href="https://i-like-u-kappa.vercel.app"><b>🎮 Open the Game Boy</b></a> · 
   <a href="https://i-like-u-kappa.vercel.app/create"><b>💌 Make a Custom Cartridge</b></a> · 
   <a href="https://github.com/Zierax/I-Like-U/releases/tag/v1.0.0"><b>📦 v1.0.0 Release</b></a>

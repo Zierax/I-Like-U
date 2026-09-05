@@ -64,6 +64,21 @@ export default function Experience() {
     }
   }, [])
 
+  useEffect(() => {
+    const senderText = from ? ` from ${from}` : ''
+    document.title = `A Secret Retro Cartridge for ${display}${senderText} · I Like U`
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        `A special 8-bit interactive retro cartridge love note created for ${display}${senderText}. Boot up the Game Boy to discover what's inside.`
+      )
+    }
+    return () => {
+      document.title = 'I Like U · 8-Bit Retro Handheld Love Note & Cartridge Generator'
+    }
+  }, [display, from])
+
   return (
     <div
       className="gameboy-page-wrap"

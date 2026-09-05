@@ -1,0 +1,29 @@
+{
+  "name": "I Like U · 8-Bit Retro Handheld Love Note Generator",
+  "short_name": "I Like U",
+  "description": "An open-source 8-bit retro handheld love note generator with procedural Web Audio chiptune synth and interactive cartridges.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF0F5",
+  "theme_color": "#FF4370",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
@@ -10,6 +10,10 @@ import { PixelHeart } from '../components/PixelSprites.jsx'
 import { playConsoleButton, playHeartChirp, playSparkle } from '../lib/sound.js'
 
 export default function Generator() {
+  useEffect(() => {
+    document.title = 'Cartridge Builder · I Like U · 8-Bit Retro Love Note Generator'
+  }, [])
+
   const [theirName, setTheirName] = useState('')
   const [yourName, setYourName] = useState('')
   const [customNote, setCustomNote] = useState('')
@@ -788,12 +792,45 @@ export default function Generator() {
           maxWidth: 640,
           width: '100%',
           margin: '0 auto',
-          padding: '16px 0 24px',
+          padding: '24px 0 32px',
           display: 'flex',
-          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 16,
           borderTop: `3px dashed ${t.border}`,
         }}
       >
+        {/* Featured on Fazier Badge */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+          <a
+            href="https://fazier.com/launches/i-like-u-kappa.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Featured on Fazier"
+            style={{
+              display: 'inline-block',
+              transition: 'transform 0.15s ease, filter 0.15s ease',
+              lineHeight: 0,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.12))'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'none'
+              e.currentTarget.style.filter = 'none'
+            }}
+          >
+            <img
+              src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=featured&theme=neutral"
+              width={250}
+              height={54}
+              alt="Fazier badge"
+              style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </a>
+        </div>
+
         <Credit theme={t} />
       </footer>
     </div>
